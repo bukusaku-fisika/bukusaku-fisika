@@ -7,7 +7,7 @@
               Kosongkan ('') bila belum ada videonya.
    ===================================================================== */
 window.BK_CONFIG = {
-  ENDPOINT: '',
+  ENDPOINT: 'https://script.google.com/macros/s/AKfycbznJACWjmRM_cMTls43adTFfU5bIPgKMN6xrsZxr9HpVScoP1vn-f0553SEdwykrcM7/exec',
   BUKU: 'Suhu dan Kalor (Edisi Uji Coba)',
   VIDEO: {
     '1.1': 'Cd8vxMmD9fA',
