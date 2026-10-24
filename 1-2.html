@@ -1,0 +1,1443 @@
+<!doctype html>
+<html lang="id"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"></head><body>
+<title>Buku Saku 1.2 Pemuaian Termal</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;800;900&family=Nunito+Sans:opsz,wght@6..12,400;6..12,600;6..12,700;6..12,800&family=Caveat:wght@600&display=swap">
+<style>
+/* Tata letak: satu halaman buku per layar, pita merah-emas di kepala halaman seperti aset cetak, kotak berlabel untuk tiap bagian, navigasi halaman di bawah */
+:root{
+  --bg:#f4ece9; --page:#fffdfb; --surface:#ffffff; --surface-2:#fbebe8; --ink:#2b1a1c; --muted:#70595b; --line:#ecd3cf;
+  --brand:#a3121f; --brand-bg:#8f0f1b; --on-brand:#fff6ef; --gold:#c4923a; --paper:#fff6d8; --orange:#e2672a;
+  --hot:#e04a2c; --cold:#2f7fd6; --ok:#1c7d45; --bad:#b93226; --steam:#9aa6b4;
+  --oil:#d9a21b; --sand:#d9bb8c; --metal:#9aa3ab; --skin:#e8b490; --suam:#e9a85a;
+  --display:"Montserrat","Arial Black",system-ui,sans-serif;
+  --body:"Nunito Sans","Segoe UI",system-ui,sans-serif;
+  --hand:"Caveat","Segoe Script",cursive;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --bg:#120a0b; --page:#1d1214; --surface:#241619; --surface-2:#301c20; --ink:#f5eae6; --muted:#bfa7a6; --line:#4a2d31;
+  --brand:#ff8d90; --brand-bg:#7c131e; --on-brand:#fff1e8; --gold:#e0b565; --paper:#3a2c1c; --orange:#ff9a5c;
+  --hot:#ff7350; --cold:#6aaeff; --ok:#5fd08e; --bad:#ff8674; --steam:#b9c3cf;
+  --oil:#f0bd3c; --sand:#c9a774; --metal:#8b949c; --skin:#d9a07a; --suam:#f0b46a; color-scheme:dark } }
+:root[data-theme="dark"]{
+  --bg:#120a0b; --page:#1d1214; --surface:#241619; --surface-2:#301c20; --ink:#f5eae6; --muted:#bfa7a6; --line:#4a2d31;
+  --brand:#ff8d90; --brand-bg:#7c131e; --on-brand:#fff1e8; --gold:#e0b565; --paper:#3a2c1c; --orange:#ff9a5c;
+  --hot:#ff7350; --cold:#6aaeff; --ok:#5fd08e; --bad:#ff8674; --steam:#b9c3cf;
+  --oil:#f0bd3c; --sand:#c9a774; --metal:#8b949c; --skin:#d9a07a; --suam:#f0b46a; color-scheme:dark }
+
+*{box-sizing:border-box}
+html,body{height:100%}
+body{background:var(--bg);color:var(--ink);font:16px/1.55 var(--body);margin:0}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:30;background:var(--brand-bg)}
+
+/* ---------- kerangka buku ---------- */
+.bk-top{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:var(--brand-bg);color:var(--on-brand);border-bottom:3px solid var(--gold)}
+.bk-top-in{max-width:820px;margin:0 auto;display:flex;align-items:center;gap:12px;padding-block:8px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.bk-iconbtn{border:1.5px solid color-mix(in srgb,var(--gold) 70%,transparent);background:transparent;color:var(--on-brand);border-radius:10px;padding:6px 10px;cursor:pointer;font:700 13px var(--body);display:flex;gap:6px;align-items:center}
+.bk-iconbtn svg{width:18px;height:18px}
+.bk-ttl{min-width:0;flex:1}
+.bk-ttl small{display:block;font-size:11px;letter-spacing:.16em;text-transform:uppercase;opacity:.8;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bk-ttl b{display:block;font-family:var(--display);font-weight:800;font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bk-pg{font-family:var(--display);font-weight:800;font-size:13px;white-space:nowrap;font-variant-numeric:tabular-nums}
+.bk-prog{height:4px;background:color-mix(in srgb,var(--on-brand) 18%,transparent)}
+.bk-prog i{display:block;height:100%;width:0;background:var(--gold);transition:width .35s ease}
+
+.bk-stage{max-width:820px;margin:0 auto;padding-block:18px 110px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));perspective:1600px}
+.bk-page{background:var(--page);border:1px solid var(--line);border-radius:6px 18px 18px 6px;box-shadow:0 18px 40px -26px color-mix(in srgb,var(--brand-bg) 60%,transparent),inset 6px 0 10px -8px color-mix(in srgb,var(--ink) 30%,transparent);overflow:hidden;transform-origin:left center}
+.bk-page[hidden]{display:none}
+.bk-page.in-next{animation:turnIn .45s ease both}
+.bk-page.in-prev{animation:turnBack .45s ease both}
+@keyframes turnIn{from{opacity:.2;transform:rotateY(-14deg) translateX(30px)}to{opacity:1;transform:none}}
+@keyframes turnBack{from{opacity:.2;transform:rotateY(10deg) translateX(-30px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion: reduce){.bk-page.in-next,.bk-page.in-prev{animation:none}}
+
+.bk-band{background:linear-gradient(115deg,var(--brand-bg) 0 58%,transparent 58.2%),linear-gradient(115deg,transparent 0 57%,var(--gold) 57.2% 58.6%,transparent 58.8%);color:var(--on-brand);display:flex;justify-content:space-between;align-items:flex-start;gap:12px;padding:12px 18px 16px}
+.bk-band small{display:block;font-size:10.5px;letter-spacing:.22em;text-transform:uppercase;opacity:.85}
+.bk-band b{display:block;font-family:var(--display);font-weight:900;font-size:22px;letter-spacing:.06em;color:var(--gold);line-height:1}
+.bk-band span{font-size:12.5px}
+.bk-band .num{font-family:var(--display);font-weight:900;font-size:26px;color:var(--brand);line-height:1;align-self:center}
+
+.bk-body{padding:6px 22px 26px;display:flex;flex-direction:column;gap:18px}
+@media (max-width:520px){.bk-body{padding:4px 14px 22px}.bk-band{padding:10px 14px 14px}}
+.bk-foot{display:flex;justify-content:space-between;gap:12px;padding:10px 22px;border-top:3px solid var(--gold);background:linear-gradient(90deg,var(--brand-bg),color-mix(in srgb,var(--brand-bg) 80%,var(--gold)));color:var(--on-brand);font-size:12px}
+.bk-foot i{font-style:italic;opacity:.9}
+
+.bk-hd{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px 18px;align-items:start}
+.bk-kick{display:flex;align-items:center;gap:10px;font:800 12px var(--display);letter-spacing:.14em;text-transform:uppercase;color:var(--ink)}
+.bk-chip{background:var(--brand-bg);color:var(--on-brand);font:900 15px var(--display);letter-spacing:0;padding:4px 9px;border-radius:4px;box-shadow:2px 2px 0 var(--gold)}
+.bk-h{font-family:var(--display);font-weight:900;font-size:clamp(30px,7vw,48px);line-height:1;letter-spacing:-.02em;margin:8px 0 0;text-wrap:balance;color:color-mix(in srgb,var(--ink) 78%,var(--muted))}
+.bk-h em{font-style:normal;color:var(--brand)}
+.bk-lead{margin:8px 0 0;max-width:62ch;font-size:16.5px}
+.bk-sticky{font-family:var(--hand);font-size:22px;line-height:1.1;color:var(--brand);background:var(--paper);padding:12px 14px 14px;max-width:12ch;transform:rotate(3deg);box-shadow:0 8px 16px -10px color-mix(in srgb,var(--ink) 50%,transparent);border-bottom:2px solid var(--gold)}
+@media (max-width:600px){.bk-hd{grid-template-columns:1fr}.bk-sticky{max-width:none;transform:rotate(-1deg);font-size:20px}}
+
+.bk-box{border:1px solid var(--line);border-radius:14px;background:var(--surface);display:flex;flex-direction:column;min-width:0}
+.bk-lbl{align-self:flex-start;display:flex;align-items:center;gap:8px;background:linear-gradient(90deg,var(--brand-bg),var(--orange));color:#fff;font:800 13.5px var(--display);letter-spacing:.06em;text-transform:uppercase;padding:7px 18px 7px 12px;border-radius:14px 0 14px 0;clip-path:polygon(0 0,100% 0,calc(100% - 12px) 100%,0 100%)}
+.bk-lbl.warn{background:linear-gradient(90deg,var(--bad),var(--orange))}
+.bk-lbl.tip{background:linear-gradient(90deg,var(--orange),var(--gold))}
+.bk-in{padding:12px 16px 16px;display:flex;flex-direction:column;gap:10px;min-width:0}
+.bk-in p{margin:0;max-width:66ch}
+.bk-grid2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.bk-grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+@media (max-width:640px){.bk-grid2,.bk-grid3{grid-template-columns:1fr}}
+.bk-ul{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:4px}
+.bk-ul li::marker{color:var(--brand)}
+.bk-muted{color:var(--muted);font-size:14.5px}
+.bk-img{width:100%;height:auto;max-height:300px;border-radius:10px;display:block;object-fit:cover}
+.bk-hex{clip-path:polygon(25% 3%,75% 3%,100% 50%,75% 97%,25% 97%,0 50%);max-width:260px;justify-self:end}
+.bk-kw{display:flex;flex-wrap:wrap;gap:6px}
+.bk-kw span{border:1px solid var(--line);background:var(--surface-2);border-radius:999px;padding:3px 10px;font-size:14px;font-weight:600}
+.bk-hl{color:var(--brand);font-weight:800}
+.bk-big{font-family:var(--display);font-weight:800;font-size:clamp(19px,3.4vw,24px);color:var(--brand);line-height:1.25;margin:0;text-wrap:balance}
+
+/* ---------- komponen interaktif ---------- */
+.bk-btn{border:0;border-radius:10px;padding:9px 16px;font:700 15px var(--body);cursor:pointer;background:var(--brand-bg);color:var(--on-brand)}
+.bk-btn.alt{background:transparent;color:var(--brand);border:1.5px solid var(--brand)}
+.bk-btn:disabled{opacity:.45;cursor:not-allowed}
+.bk-btn:focus-visible,.bk-iconbtn:focus-visible,.bk-opt:focus-within,.bk-flip:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+.bk-row{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.bk-ta{width:100%;min-height:76px;border:1.5px solid var(--line);border-radius:10px;padding:10px;background:var(--surface);color:var(--ink);font:inherit;resize:vertical}
+.bk-ta.ruled{background-image:repeating-linear-gradient(transparent 0 27px,color-mix(in srgb,var(--orange) 35%,transparent) 27px 28px);line-height:28px;background-attachment:local}
+.bk-field{display:flex;flex-direction:column;gap:6px}
+.bk-field>label{font-weight:700}
+.bk-num{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.bk-num input{width:120px;border:1.5px solid var(--line);border-radius:8px;padding:7px 9px;background:var(--surface);color:var(--ink);font:inherit;font-variant-numeric:tabular-nums}
+.bk-fb{padding:10px 14px;border-radius:10px;background:var(--surface-2);border-left:4px solid var(--gold);max-width:66ch}
+.bk-fb.ok{border-color:var(--ok)}.bk-fb.bad{border-color:var(--bad)}
+.bk-fb:empty{display:none}
+.bk-q{display:flex;flex-direction:column;gap:10px;padding:14px 16px;border:1px solid var(--line);border-radius:12px;background:var(--surface)}
+.bk-qn{display:flex;gap:10px;align-items:flex-start}
+.bk-qn>b{flex:none;width:30px;height:30px;border-radius:50%;background:var(--brand-bg);color:var(--on-brand);display:grid;place-items:center;font:800 14px var(--display)}
+.bk-qn>div{min-width:0;flex:1;display:flex;flex-direction:column;gap:10px}
+.bk-qtype{font:800 11.5px var(--display);letter-spacing:.12em;text-transform:uppercase;color:var(--orange)}
+.bk-opts{display:flex;flex-direction:column;gap:6px}
+.bk-opt{display:flex;gap:10px;align-items:flex-start;padding:8px 12px;border:1.5px solid var(--line);border-radius:10px;background:var(--surface);cursor:pointer}
+.bk-opt:has(input:checked){border-color:var(--brand);background:var(--surface-2)}
+.bk-opt input{margin-top:5px;accent-color:var(--brand)}
+.bk-opt b{font-family:var(--display);color:var(--brand);min-width:1.2em}
+.bk-rate{display:flex;flex-wrap:wrap;gap:6px}
+.bk-rate button{border:1.5px solid var(--line);background:var(--surface);border-radius:999px;padding:6px 12px;cursor:pointer;font:600 14px var(--body);color:var(--ink)}
+.bk-rate button[aria-pressed="true"]{border-color:var(--brand);background:var(--brand-bg);color:var(--on-brand)}
+.bk-model{background:var(--paper);border-radius:4px 14px 14px 14px;padding:12px 14px;max-width:66ch}
+.bk-model b{font-family:var(--hand);font-size:21px;color:var(--brand);display:block;line-height:1}
+.bk-sent{font-size:13px;color:var(--ok);font-weight:700}
+.bk-check{display:flex;gap:10px;align-items:flex-start;padding:8px 10px;border-radius:10px;cursor:pointer}
+.bk-check input{width:20px;height:20px;accent-color:var(--orange);margin-top:2px;flex:none}
+.bk-check:has(input:checked){background:var(--surface-2)}
+.bk-pills{display:flex;flex-wrap:wrap;gap:6px}
+.bk-pills button{border:1.5px dashed var(--gold);background:var(--surface);border-radius:999px;padding:6px 13px;cursor:pointer;font:600 14px var(--body);color:var(--ink)}
+.bk-pills button[aria-pressed="true"]{border-style:solid;background:var(--paper);border-color:var(--brand)}
+
+/* partikel & skala */
+.bk-cv{width:100%;height:auto;display:block;border-radius:12px;background:var(--surface-2)}
+.bk-slider{display:flex;flex-direction:column;gap:4px}
+.bk-slider label{display:flex;justify-content:space-between;font-weight:700;font-size:14.5px}
+.bk-slider output{color:var(--brand);font-variant-numeric:tabular-nums}
+.bk-slider input{width:100%;accent-color:var(--brand)}
+.bk-flow{display:flex;flex-direction:column;gap:6px}
+.bk-flow div{background:var(--surface-2);border-radius:10px;padding:8px 12px;font-weight:600}
+.bk-flow span{align-self:center;color:var(--brand);font-weight:800;line-height:1}
+.bk-flips{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+@media (max-width:700px){.bk-flips{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.bk-flip{border:1.5px solid var(--line);border-radius:12px;background:var(--surface);padding:10px;cursor:pointer;display:flex;flex-direction:column;gap:8px;text-align:left;color:var(--ink);font:inherit;min-width:0}
+.bk-flip h4{margin:0;font:800 14.5px var(--display);display:flex;gap:6px;align-items:center}
+.bk-flip h4 i{font-style:normal;width:22px;height:22px;border-radius:50%;background:var(--brand-bg);color:var(--on-brand);display:grid;place-items:center;font-size:12px;flex:none}
+.bk-flip .back{display:none;font-size:14px;flex-direction:column;gap:6px}
+.bk-flip[aria-expanded="true"] .back{display:flex}
+.bk-flip[aria-expanded="true"] .front-img{display:none}
+.bk-flip .tap{font-size:12.5px;color:var(--orange);font-weight:700}
+.bk-flip .back b{color:var(--brand)}
+.bk-tbl{overflow-x:auto}
+.bk-tbl table{border-collapse:collapse;width:100%;font-size:14.5px;font-variant-numeric:tabular-nums}
+.bk-tbl th,.bk-tbl td{padding:7px 10px;border-bottom:1px solid var(--line);text-align:center;white-space:nowrap}
+.bk-tbl th{background:var(--brand-bg);color:var(--on-brand)}
+.bk-tbl td:first-child,.bk-tbl th:first-child{text-align:left}
+.bk-scales{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+@media (max-width:520px){.bk-scales{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.bk-scales div{background:var(--surface-2);border-radius:10px;padding:8px 10px;text-align:center;min-width:0}
+.bk-scales span{display:block;font-size:12.5px;font-weight:700;color:var(--muted)}
+.bk-scales b{font:800 20px var(--display);font-variant-numeric:tabular-nums;color:var(--brand);overflow-wrap:anywhere}
+.bk-pics{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.bk-pic{border:1.5px solid var(--line);border-radius:12px;background:var(--surface);padding:6px;cursor:pointer;display:flex;flex-direction:column;gap:6px;color:var(--ink);font:inherit;text-align:center}
+.bk-pic[aria-pressed="true"]{border-color:var(--brand);background:var(--surface-2)}
+.bk-pic img{width:100%;aspect-ratio:4/3;object-fit:cover;border-radius:8px}
+.bk-pic b{font-size:13.5px}
+.bk-formula{font-family:"Cambria Math","STIX Two Math","Times New Roman",serif;font-style:italic;font-size:22px;line-height:2}
+.bk-frac{display:inline-flex;flex-direction:column;align-items:center;line-height:1.15;vertical-align:middle;margin:0 2px}
+.bk-frac>span:first-child{border-bottom:1.5px solid currentColor;padding:0 4px}
+.bk-formula sub{font-size:.6em}
+.bk-main{background:var(--brand-bg);color:var(--on-brand)}
+.bk-main .bk-formula{font-size:clamp(24px,5vw,32px);color:var(--paper);text-align:center;padding-block:6px}
+.bk-main .bk-in p,.bk-main dl{color:var(--on-brand)}
+.bk-dl{display:grid;grid-template-columns:auto 1fr;gap:2px 10px;margin:0;font-size:14.5px}
+.bk-dl dt{font-family:"Cambria Math","Times New Roman",serif;font-style:italic}
+.bk-dl dd{margin:0}
+.bk-steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}
+.bk-steps>div{background:var(--surface-2);border-radius:10px;padding:10px 12px;display:flex;flex-direction:column;gap:6px;min-width:0}
+.bk-steps>div[hidden]{display:none}
+.bk-steps h5{margin:0;font:800 13.5px var(--display);color:var(--brand);display:flex;gap:6px;align-items:center}
+.bk-steps h5 i{font-style:normal;background:var(--brand-bg);color:var(--on-brand);border-radius:6px;padding:1px 6px;font-size:12px}
+.bk-answer{background:var(--paper);border:2px solid var(--gold);border-radius:12px;padding:10px 14px;font:800 20px var(--display);color:var(--brand);text-align:center}
+.bk-sort{display:flex;flex-direction:column;gap:8px}
+.bk-sort>div{display:grid;grid-template-columns:minmax(0,1fr) auto auto;gap:8px;align-items:center;padding:8px 10px;border:1.5px solid var(--line);border-radius:10px;background:var(--surface)}
+.bk-sort>div.ok{border-color:var(--ok)}.bk-sort>div.bad{border-color:var(--bad)}
+.bk-sort button{border:1.5px solid var(--line);background:var(--surface);border-radius:8px;padding:5px 10px;font:700 13.5px var(--body);cursor:pointer;color:var(--ink)}
+.bk-sort button[aria-pressed="true"].s{background:var(--cold);border-color:var(--cold);color:#fff}
+.bk-sort button[aria-pressed="true"].k{background:var(--hot);border-color:var(--hot);color:#fff}
+@media (max-width:460px){.bk-sort>div{grid-template-columns:1fr 1fr}.bk-sort>div>span{grid-column:1/-1}}
+.bk-bar{position:relative;height:56px;border-radius:12px;overflow:hidden;background:linear-gradient(90deg,var(--hot),var(--cold))}
+.bk-bar i{position:absolute;top:50%;width:18px;height:3px;background:#fff;border-radius:2px;animation:flow 2.4s linear infinite}
+.bk-bar i::after{content:"";position:absolute;right:-5px;top:-4px;border:5.5px solid transparent;border-left:7px solid #fff}
+@keyframes flow{from{left:8%;opacity:0}15%{opacity:1}85%{opacity:1}to{left:88%;opacity:0}}
+@media (prefers-reduced-motion: reduce){.bk-bar i{animation:none;left:45%}}
+.bk-video{position:relative;border-radius:14px;overflow:hidden;background:#1a0f10;aspect-ratio:16/9;max-width:100%;display:grid;place-items:center;color:#fff;text-align:center}
+.bk-video button{border:0;background:var(--brand-bg);color:#fff;border-radius:999px;width:68px;height:68px;cursor:pointer;display:grid;place-items:center}
+.bk-video iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+.bk-video p{margin:8px 16px 0;font-size:14px;opacity:.85}
+.bk-emoji{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}
+.bk-emoji button{border:1.5px solid var(--line);background:var(--surface);border-radius:12px;padding:8px 4px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:4px;font:600 12.5px var(--body);color:var(--ink);line-height:1.2}
+.bk-emoji button[aria-pressed="true"]{border-color:var(--brand);background:var(--surface-2)}
+.bk-emoji svg{width:30px;height:30px}
+.bk-srow{display:flex;flex-direction:column;gap:6px;padding-block:8px;border-bottom:1px solid var(--line)}
+.bk-srow:last-child{border-bottom:0}
+
+/* sampul */
+.bk-cover{background:radial-gradient(120% 80% at 100% 0%,color-mix(in srgb,var(--gold) 35%,transparent),transparent 60%),var(--brand-bg);color:var(--on-brand);padding:28px 22px;display:flex;flex-direction:column;gap:16px}
+.bk-cover small{letter-spacing:.2em;text-transform:uppercase;font-size:12px;opacity:.85}
+.bk-cover h1{margin:0;font:900 clamp(40px,10vw,68px)/.95 var(--display);color:var(--gold);letter-spacing:.02em}
+.bk-cover h2{margin:0;font:800 clamp(20px,4.5vw,28px) var(--display)}
+.bk-cover p{margin:0;max-width:56ch;opacity:.95}
+.bk-cover .bk-hand{font-family:var(--hand);font-size:26px;color:var(--paper)}
+.bk-login{background:var(--page);color:var(--ink);border-radius:14px;padding:16px;display:flex;flex-direction:column;gap:12px}
+.bk-login input{border:1.5px solid var(--line);border-radius:8px;padding:8px 10px;background:var(--surface);color:var(--ink);font:inherit;width:min(260px,100%)}
+.bk-login .bk-row label{font-weight:700;display:flex;flex-direction:column;gap:4px}
+
+/* navigasi bawah & daftar isi */
+.bk-nav{position:fixed;inset:auto 0 0;z-index:20;background:color-mix(in srgb,var(--page) 92%,transparent);backdrop-filter:blur(8px);border-top:1px solid var(--line);padding-top:10px;padding-bottom:calc(10px + env(safe-area-inset-bottom,0px));padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.bk-nav-in{max-width:820px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;gap:10px}
+.bk-nav .bk-btn{display:flex;align-items:center;gap:6px}
+.bk-nav .mid{font-size:13px;color:var(--muted);text-align:center;min-width:0}
+@media (max-width:560px){.bk-nav .mid{display:none}}
+.bk-toc{position:fixed;inset:0;z-index:40;background:color-mix(in srgb,var(--ink) 45%,transparent);display:flex}
+.bk-toc[hidden]{display:none}
+.bk-toc-in{background:var(--page);width:min(360px,88vw);height:100%;overflow-y:auto;padding-top:calc(16px + env(safe-area-inset-top,0px));padding-bottom:calc(16px + env(safe-area-inset-bottom,0px));padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:16px;display:flex;flex-direction:column;gap:6px}
+.bk-toc-in h2{font:900 20px var(--display);margin:0 0 6px;color:var(--brand)}
+.bk-toc-in button.it{display:grid;grid-template-columns:28px 1fr auto;gap:8px;align-items:center;text-align:left;border:0;background:transparent;padding:8px;border-radius:10px;cursor:pointer;font:600 15px var(--body);color:var(--ink)}
+.bk-toc-in button.it[aria-current="page"]{background:var(--surface-2)}
+.bk-toc-in button.it b{font:800 13px var(--display);color:var(--muted);font-variant-numeric:tabular-nums}
+.bk-toc-in button.it .dn{color:var(--ok);font-weight:800}
+.bk-sync{margin-top:auto;border-top:1px solid var(--line);padding-top:12px;font-size:13.5px;color:var(--muted);display:flex;flex-direction:column;gap:8px}
+
+/* ---------- gaya lab virtual (dari Lab Virtual Kalor) ---------- */
+h1,h2,h3{font-family:var(--display);text-wrap:balance;margin:0;line-height:1.15}
+button,select,input,textarea{font:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+
+
+
+.head{display:grid;grid-template-columns:1fr auto;gap:8px 24px;align-items:start;padding-block:10px 6px}
+.head .no{font-family:var(--display);font-weight:800;color:var(--brand);font-size:14px;letter-spacing:.08em;text-transform:uppercase}
+.head h2{font-size:clamp(24px,4.4vw,36px);font-weight:800}
+.head .ask{font-size:18px;margin:8px 0 0;max-width:60ch}
+.note{font-family:var(--hand);font-size:22px;line-height:1.15;color:var(--brand);transform:rotate(-3deg);max-width:13ch;border-bottom:2px solid var(--gold);padding-bottom:4px}
+@media (max-width:640px){.head{grid-template-columns:1fr}.note{display:none}}
+
+.step{display:grid;grid-template-columns:44px minmax(0,1fr);gap:0 14px;padding-block:20px;border-top:1px solid var(--line)}
+.step>.n{font-family:var(--display);font-weight:800;font-size:18px;width:40px;height:40px;border-radius:50%;background:var(--brand-bg);color:var(--on-brand);display:grid;place-items:center}
+.step h3{font-size:19px;font-weight:800;padding-top:8px}
+.step .body{grid-column:2;min-width:0;display:flex;flex-direction:column;gap:12px;margin-top:8px}
+.step p{margin:0;max-width:68ch}
+.hint{color:var(--muted);font-size:14.5px}
+@media (max-width:520px){.step{grid-template-columns:minmax(0,1fr)}.step .body{grid-column:1}.step>.n{margin-bottom:4px}}
+
+.phen{background:var(--paper);border-radius:4px 16px 16px 16px;padding:18px 20px;display:flex;flex-direction:column;gap:10px;box-shadow:0 1px 0 var(--line)}
+.phen .tag{font-family:var(--hand);font-size:24px;color:var(--brand);line-height:1}
+.phen p{max-width:70ch}
+.phen .pem{font-weight:700}
+.demo{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:14px;display:flex;flex-direction:column;gap:10px}
+.demo svg{width:100%;height:auto;display:block}
+.hand{transition:transform .7s ease}
+@media (prefers-reduced-motion: reduce){.hand{transition:none}}
+
+.opts{display:flex;flex-direction:column;gap:6px}
+.opts label{display:flex;gap:10px;align-items:flex-start;padding:8px 12px;border:1.5px solid var(--line);border-radius:10px;background:var(--surface);cursor:pointer}
+.opts label:has(input:checked){border-color:var(--brand);background:var(--surface-2)}
+.opts input{margin-top:5px;accent-color:var(--brand)}
+.fb{padding:10px 14px;border-radius:10px;background:var(--surface-2);border-left:4px solid var(--gold);max-width:68ch}
+.fb.ok{border-color:var(--ok)} .fb.bad{border-color:var(--bad)}
+
+.vars{display:grid;grid-template-columns:minmax(0,1fr) auto auto;gap:8px 12px;align-items:center}
+.vars label{min-width:0}
+.vars select,.ctl select,.row input[type=number]{background:var(--surface);border:1.5px solid var(--line);border-radius:8px;padding:6px 8px;max-width:100%}
+.vars .m{font-weight:700;min-width:1.2em}
+.m.ok{color:var(--ok)} .m.bad{color:var(--bad)}
+
+.btn{border:0;border-radius:9px;padding:9px 16px;font-weight:700;cursor:pointer;background:var(--brand-bg);color:var(--on-brand)}
+.btn.alt{background:transparent;color:var(--brand);border:1.5px solid var(--brand)}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.row{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.chips{font-size:14px;color:var(--muted)}
+.chips button{border:1.5px dashed var(--gold);background:var(--surface);border-radius:999px;padding:5px 12px;cursor:pointer;font-size:14px;font-weight:600}
+.chips button:hover{background:var(--paper)}
+
+.bench{display:grid;grid-template-columns:minmax(0,300px) minmax(0,1fr);gap:20px;background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:18px}
+@media (max-width:760px){.bench{grid-template-columns:1fr}}
+.ctls{display:flex;flex-direction:column;gap:14px;min-width:0}
+.ctl label{display:flex;justify-content:space-between;gap:8px;font-size:14px;font-weight:600}
+.ctl output{font-variant-numeric:tabular-nums;color:var(--brand);font-weight:700;white-space:nowrap}
+.ctl input[type=range]{width:100%;accent-color:var(--brand)}
+.ctl select{width:100%}
+.stage{min-width:0;display:flex;flex-direction:column;gap:12px}
+.stage svg,.stage canvas{width:100%;height:auto;display:block}
+.reads{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:8px}
+.reads div{background:var(--surface-2);border-radius:10px;padding:8px 12px;min-width:0}
+.reads span{display:block;font-size:12.5px;font-weight:700;color:var(--muted)}
+.reads b{font-family:var(--display);font-size:18px;font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
+.reads .good b{color:var(--ok)} .reads .warn b{color:var(--bad)}
+
+svg text{font-family:var(--body);fill:var(--ink)}
+.tick{font-size:11px;fill:var(--muted)!important} .axl{font-size:12px;font-weight:700}
+.grid{stroke:var(--line);stroke-width:1} .axis{stroke:var(--muted);stroke-width:1.2}
+.ln{fill:none;stroke:var(--brand);stroke-width:2.5;stroke-linejoin:round} .ln.ghost{stroke:var(--muted);stroke-dasharray:5 4;stroke-width:1.8}
+.dot{fill:var(--brand);stroke:var(--surface);stroke-width:1.5}
+.f-hot{fill:var(--hot)} .f-cold{fill:var(--cold)} .f-line{fill:var(--line)} .f-sur{fill:var(--surface-2)} .f-mut{fill:var(--muted)} .f-gold{fill:var(--gold)}
+.f-oil{fill:var(--oil)} .f-sand{fill:var(--sand)} .f-metal{fill:var(--metal)} .f-skin{fill:var(--skin)} .f-suam{fill:var(--suam)} .f-steam{fill:none;stroke:var(--steam);stroke-width:3;stroke-linecap:round}
+.s-ink{stroke:var(--muted);fill:none;stroke-width:2} .s-dash{stroke:var(--muted);stroke-dasharray:4 4;stroke-width:1} .s-hot{stroke:var(--hot);fill:none;stroke-width:7;stroke-linecap:round}
+.cap{font-size:12px;fill:var(--muted)!important} .big{font-family:var(--display)!important;font-weight:800;font-size:22px}
+.lbl{font-size:13px;font-weight:700}
+
+.comp{display:flex;height:22px;border-radius:8px;overflow:hidden;border:1px solid var(--line)}
+.comp i{display:block;height:100%} .comp .p{background:var(--cold)} .comp .c{background:color-mix(in srgb,var(--cold) 45%,var(--surface))} .comp .g{background:var(--steam)}
+.legend{display:flex;gap:14px;flex-wrap:wrap;font-size:13px;color:var(--muted)}
+.legend i{display:inline-block;width:11px;height:11px;border-radius:3px;margin-right:5px;vertical-align:-1px}
+
+.tw{overflow-x:auto;border:1px solid var(--line);border-radius:12px;background:var(--surface)}
+table{border-collapse:collapse;width:100%;font-variant-numeric:tabular-nums;font-size:14.5px}
+th,td{padding:8px 12px;text-align:right;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:var(--surface-2);font-size:13px}
+th:first-child,td:first-child{text-align:left} tr:last-child td{border-bottom:0}
+td button{border:0;background:none;color:var(--muted);cursor:pointer;font-size:16px;padding:0 4px}
+.empty{padding:18px;color:var(--muted);text-align:center}
+.split{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:16px;align-items:start}
+.split>*{min-width:0}
+@media (max-width:760px){.split{grid-template-columns:1fr}}
+.plot{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:8px}
+
+.q{display:flex;flex-direction:column;gap:6px}
+.q textarea{width:100%;min-height:70px;border:1.5px solid var(--line);border-radius:10px;padding:10px;background:var(--surface);resize:vertical}
+.foot{padding-block:22px 40px;border-top:1px solid var(--line);display:flex;flex-direction:column;gap:10px}
+#rep{width:100%;min-height:160px;font-family:ui-monospace,Consolas,monospace;font-size:13px;border:1.5px solid var(--line);border-radius:10px;padding:10px;background:var(--surface)}
+/* lab virtual di dalam buku */
+.bk-labwrap{margin-inline:-6px}
+.bk-labwrap .wrap{padding:0}
+.bk-labwrap .note{display:none}
+/* ---------- versi tab: halaman berbingkai tetap, isi berganti lewat tab ---------- */
+.bk-tabpage:not([hidden]){display:flex;flex-direction:column;height:calc(100dvh - 190px - env(safe-area-inset-top,0px) - env(safe-area-inset-bottom,0px));min-height:520px}
+.bk-tabpage>.bk-body{flex:1;min-height:0;display:flex;flex-direction:column}
+.bk-tabpage>.bk-body>*{flex:none}
+.bk-tabs{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;padding:2px 2px 4px;margin-inline:-2px;scroll-snap-type:x proximity}
+.bk-tabs::-webkit-scrollbar{display:none}
+.bk-tab{all:unset;box-sizing:border-box;flex:none;scroll-snap-align:start;display:flex;align-items:center;gap:6px;padding:7px 12px 7px 8px;border:1.5px solid var(--line);border-radius:999px;background:var(--surface);color:var(--ink);font:700 13.5px var(--body);cursor:pointer;white-space:nowrap}
+.bk-tab:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+.bk-tab[aria-selected="true"]{background:var(--brand-bg);border-color:var(--brand-bg);color:var(--on-brand)}
+.bk-tbic{width:22px;height:22px;display:grid;place-items:center;color:var(--brand)}
+.bk-tbic svg{width:17px;height:17px}
+.bk-tbic i{font-style:normal;width:22px;height:22px;border-radius:50%;background:var(--surface-2);display:grid;place-items:center;font:800 12px var(--display)}
+.bk-tab[aria-selected="true"] .bk-tbic{color:var(--gold)}
+.bk-tab[aria-selected="true"] .bk-tbic i{background:var(--gold);color:var(--brand-bg)}
+.bk-tst{width:16px;height:16px;border-radius:50%;display:grid;place-items:center;font-size:10px;font-weight:800;color:#fff}
+.bk-tst:empty{display:none}
+.bk-tab[data-state="done"] .bk-tst{background:var(--ok)}
+.bk-panel{flex:1 1 auto!important;min-height:0;overflow-y:auto;overscroll-behavior:contain;border:1px solid var(--line);border-radius:14px;background:var(--surface);padding:14px 16px}
+.bk-pane{display:flex;flex-direction:column;gap:12px;min-height:100%}
+.bk-pane[hidden]{display:none}
+.bk-pane .bk-src{display:flex;flex-direction:column;gap:12px}
+.bk-pane p{margin:0;max-width:66ch}
+.bk-panenav{margin-top:auto;padding-top:10px;display:flex;justify-content:space-between;gap:8px;border-top:1px dashed var(--line)}
+.bk-panenav .bk-btn{font-size:13.5px;padding:7px 12px;max-width:48%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.bk-panel .step{display:block;border:0;padding:0}
+.bk-panel .step>.n,.bk-panel .step>h3{display:none}
+.bk-panel .step .body{margin-top:0}
+.bk-panel .bk-img{max-height:220px}
+#panel{display:none}
+.bk-hero{display:grid;grid-template-columns:120px minmax(0,1fr);gap:12px;align-items:center}
+.bk-heroimg{width:100%;aspect-ratio:1;object-fit:cover;clip-path:polygon(25% 3%,75% 3%,100% 50%,75% 97%,25% 97%,0 50%)}
+.bk-heroq{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:10px 12px;display:flex;flex-direction:column;gap:4px}
+.bk-heroq span{font:800 11px var(--display);letter-spacing:.12em;text-transform:uppercase;color:var(--orange)}
+.bk-heroq p{margin:0;font:800 clamp(15px,3.4vw,19px)/1.3 var(--display);color:var(--brand);text-wrap:balance}
+.bk-heroformula{border-radius:14px;padding:4px 12px}
+.bk-heroformula .bk-formula{font-size:clamp(20px,4.6vw,28px);color:var(--paper);text-align:center}
+.bk-vs{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:8px;text-align:center}
+.bk-vs div{font:900 clamp(17px,4.5vw,24px) var(--display);border-radius:10px;padding:5px;color:#fff}
+.bk-vs .s{background:var(--cold)}.bk-vs .k{background:var(--hot)}
+.bk-vs b{font:900 24px var(--display);color:var(--brand)}
+.bk-scales-mini b{font-size:17px}
+.bk-closing{margin:0;font-family:var(--hand);font-size:20px;line-height:1.2;color:var(--brand);text-align:center}
+.bk-ytwrap{display:none}
+@media (max-width:640px){
+  body{font-size:15px}
+  .bk-band,.bk-foot,.bk-sticky,.bk-scales-mini,.bk-closing{display:none}
+  .bk-tabpage:not([hidden]){height:calc(100dvh - 146px - env(safe-area-inset-top,0px) - env(safe-area-inset-bottom,0px));min-height:0}
+  .bk-stage{padding-block:10px 84px}
+  .bk-body{padding:12px 12px 12px;gap:10px}
+  .bk-h{font-size:clamp(24px,7vw,30px);margin-top:4px}
+  .bk-lead{font-size:14px;line-height:1.4;margin-top:3px}
+  .bk-kick{font-size:11px}
+  .bk-chip{font-size:13px;padding:3px 7px}
+  .bk-panel{padding:12px}
+  .bk-hero{grid-template-columns:84px minmax(0,1fr)}
+  .bk-heroq p{font-size:14.5px}
+  .bk-top-in{padding-block:6px}
+  .bk-ttl small{display:none}
+  .bk-nav{padding-top:8px;padding-bottom:calc(8px + env(safe-area-inset-bottom,0px))}
+  .bk-nav .bk-btn{padding:8px 12px;font-size:14px}
+  .bk-cover{padding:20px 16px;gap:10px}
+  .bk-cover h1{font-size:clamp(34px,11vw,48px)}
+  .bk-cover h2{font-size:18px}
+  .bk-cover .bk-hand{font-size:21px}
+  .bk-login{padding:12px;gap:8px}
+  .bk-login input{width:100%}
+  .bk-login .bk-row{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+  .bk-login .bk-row label{min-width:0}
+  .bk-login .bk-muted{font-size:13px}
+}
+.bk-coverfoot{margin:0;font-size:13px;opacity:.85}
+.bk-heroformula{display:none}
+/* ---------- gaya buku saku: halaman berupa lembaran, bingkai aplikasi diperkecil ---------- */
+html,body{overflow:hidden;overscroll-behavior:none}
+.bk-progline{position:fixed;top:0;left:0;right:0;height:calc(3px + env(safe-area-inset-top,0px));z-index:31;background:color-mix(in srgb,var(--brand-bg) 25%,transparent)}
+.bk-progline i{position:absolute;left:0;bottom:0;height:3px;background:var(--gold);transition:width .35s ease}
+.bk-fab{position:fixed;z-index:30;top:calc(14px + env(safe-area-inset-top,0px));left:max(18px,calc(env(safe-area-inset-left,0px) + 10px));width:38px;height:38px;border-radius:50%;border:1.5px solid color-mix(in srgb,var(--gold) 80%,transparent);background:color-mix(in srgb,var(--brand-bg) 88%,transparent);color:var(--on-brand);display:grid;place-items:center;cursor:pointer;box-shadow:0 4px 12px -4px #0008}
+.bk-fab svg{width:20px;height:20px}
+.bk-fab:focus-visible,.bk-turn:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+.bk-stage{max-width:none;display:flex;justify-content:center;align-items:flex-start;padding-top:calc(10px + env(safe-area-inset-top,0px));padding-bottom:calc(10px + env(safe-area-inset-bottom,0px));padding-left:max(12px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));perspective:2200px}
+.bk-page,.bk-tabpage:not([hidden]){width:min(100%,calc((100dvh - 20px) * .72),660px);height:calc(100dvh - 20px - env(safe-area-inset-top,0px) - env(safe-area-inset-bottom,0px));min-height:0}
+.bk-page{position:relative;border:0;border-radius:3px 12px 12px 3px;background:linear-gradient(90deg,color-mix(in srgb,var(--ink) 14%,transparent),transparent 14px) ,var(--page);box-shadow:1px 0 0 var(--line),3px 2px 0 -1px var(--page),4px 2px 0 0 var(--line),6px 4px 0 -1px var(--page),7px 4px 0 0 var(--line),0 24px 40px -24px color-mix(in srgb,var(--brand-bg) 70%,transparent);transform-origin:left center}
+.bk-page:not([hidden]){display:flex;flex-direction:column}
+.bk-pcover>.bk-cover{flex:1;border-radius:3px 12px 12px 3px;justify-content:center}
+.bk-page.in-next{animation:turnIn .55s cubic-bezier(.2,.7,.3,1) both}
+.bk-page.in-prev{animation:turnBack .55s cubic-bezier(.2,.7,.3,1) both}
+@keyframes turnIn{from{opacity:.3;transform:rotateY(-38deg) translateX(24px);box-shadow:-30px 0 40px -20px #0006}to{opacity:1;transform:none}}
+@keyframes turnBack{from{opacity:.3;transform:rotateY(24deg) translateX(-24px)}to{opacity:1;transform:none}}
+
+/* kepala halaman: pita KALOR tipis seperti aset */
+.bk-band{display:flex!important;flex:none;align-items:center;gap:10px;padding:8px 16px;background:linear-gradient(110deg,var(--brand-bg) 0 62%,var(--gold) 62.3% 63.4%,transparent 63.8%),transparent;color:var(--on-brand);border-radius:3px 12px 0 0}
+.bk-band>div{display:flex;align-items:baseline;gap:8px;min-width:0}
+.bk-band small{display:none}
+.bk-band b{font:900 15px var(--display);letter-spacing:.08em;color:var(--gold)}
+.bk-band span{font-size:11.5px;white-space:nowrap}
+.bk-runhead{margin-left:auto;font:700 10.5px var(--body)!important;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.bk-band .num{font:900 22px var(--display);color:var(--brand);line-height:1}
+/* kaki halaman: pembalik halaman di pojok */
+.bk-foot{display:flex!important;flex:none;align-items:center;justify-content:space-between;gap:8px;padding:5px 8px;border-top:3px solid var(--gold);background:linear-gradient(90deg,var(--brand-bg),color-mix(in srgb,var(--brand-bg) 80%,var(--gold)));color:var(--on-brand);font-size:11.5px;border-radius:0 0 12px 3px}
+.bk-foot i{font-style:italic;opacity:.92;text-align:center;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.bk-turn{flex:none;width:34px;height:30px;border-radius:8px;border:1px solid color-mix(in srgb,var(--gold) 70%,transparent);background:transparent;color:var(--gold);font:900 22px/1 var(--display);cursor:pointer}
+.bk-turn:disabled{opacity:.3;cursor:default}
+/* catatan tempel tetap ada, versi kecil */
+.bk-sticky{display:block!important;font-size:15px;line-height:1.1;padding:7px 10px 8px;max-width:17ch;transform:rotate(3deg);align-self:start}
+.bk-scales-mini{display:none!important}
+.bk-hd{grid-template-columns:minmax(0,1fr) auto!important}
+.bk-body{padding:10px 16px 12px;gap:10px}
+
+/* tab bergaya pita label seperti di aset */
+.bk-tabs{gap:4px;padding:2px 2px 0}
+.bk-tab{border:0;border-radius:0;clip-path:polygon(0 0,100% 0,calc(100% - 10px) 100%,0 100%);padding:5px 18px 5px 6px;background:var(--surface-2);color:var(--brand);font:800 11.5px var(--display);letter-spacing:.06em;text-transform:uppercase}
+.bk-tab[aria-selected="true"]{background:linear-gradient(90deg,var(--brand-bg),var(--orange));color:#fff;border:0}
+.bk-tab.tip[aria-selected="true"]{background:linear-gradient(90deg,var(--orange),var(--gold))}
+.bk-tab.warn[aria-selected="true"]{background:linear-gradient(90deg,var(--bad),var(--orange))}
+.bk-tbic{width:22px;height:22px;border-radius:50%;background:var(--page);color:var(--brand)}
+.bk-tab[aria-selected="true"] .bk-tbic{background:#fff;color:var(--brand)}
+.bk-tbic i{background:transparent!important;color:inherit!important}
+.bk-tab[data-state="done"] .bk-tst{background:var(--ok)}
+.bk-panel{border-radius:0 14px 14px 14px;border:1.5px solid color-mix(in srgb,var(--brand) 25%,var(--line));padding:12px 14px;background:var(--surface)}
+.bk-panenav{border-top:1px dashed var(--line)}
+
+@media (max-width:640px){
+  body{font-size:14.5px}
+  .bk-stage{padding-top:calc(8px + env(safe-area-inset-top,0px));padding-bottom:calc(8px + env(safe-area-inset-bottom,0px))}
+  .bk-page,.bk-tabpage:not([hidden]){width:100%;height:calc(100dvh - 16px - env(safe-area-inset-top,0px) - env(safe-area-inset-bottom,0px))}
+  .bk-fab{top:calc(11px + env(safe-area-inset-top,0px));left:max(16px,calc(env(safe-area-inset-left,0px) + 6px));width:34px;height:34px}
+  .bk-band{padding:7px 12px 7px 54px}
+  .bk-runhead{display:none}
+  .bk-body{padding:8px 12px 10px;gap:8px}
+  .bk-h{font-size:clamp(22px,6.6vw,28px)}
+  .bk-lead{font-size:13.5px}
+  .bk-sticky{font-size:13px;max-width:13ch;padding:5px 7px 6px}
+  .bk-panel{padding:10px 12px}
+  .bk-hero{grid-template-columns:76px minmax(0,1fr)}
+}
+@media (max-width:380px){.bk-sticky{display:none!important}.bk-hd{grid-template-columns:1fr!important}}
+
+@media (max-width:900px){.bk-band{padding-left:56px}}
+
+
+/* ---------- tab bernomor + judul di dalam laman tab ---------- */
+.bk-tabrow{display:flex;align-items:center;gap:10px;justify-content:space-between;padding:2px 0 0}
+.bk-tabhint{font-size:12px;line-height:1.3;color:var(--muted);min-width:0}
+.bk-tabhint b{color:var(--brand)}
+.bk-tabs{display:flex;gap:7px;overflow:visible;padding:3px 3px 0;margin:0;flex:none}
+.bk-tab{all:unset;box-sizing:border-box;position:relative;flex:none;width:36px;height:36px;border-radius:50%;display:grid;place-items:center;clip-path:none;padding:0;background:var(--surface);border:2px solid color-mix(in srgb,var(--brand) 45%,var(--line));color:var(--brand);font:900 16px var(--display);cursor:pointer;transition:transform .15s}
+.bk-tab:hover{transform:translateY(-2px)}
+.bk-tab:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+.bk-tab b{font:inherit}
+.bk-tab[aria-selected="true"]{background:linear-gradient(135deg,var(--brand-bg),var(--orange));border-color:transparent;color:#fff;transform:translateY(-2px);box-shadow:0 4px 10px -4px color-mix(in srgb,var(--brand-bg) 80%,transparent)}
+.bk-tab.tip[aria-selected="true"]{background:linear-gradient(135deg,var(--orange),var(--gold))}
+.bk-tab:not([data-state])::after,.bk-tab[data-state=""]::after{content:"";position:absolute;top:-3px;right:-3px;width:9px;height:9px;border-radius:50%;background:var(--orange);border:2px solid var(--page)}
+.bk-tab[aria-selected="true"]::after{display:none}
+.bk-tst{position:absolute;right:-6px;bottom:-5px;width:15px;height:15px;border:2px solid var(--page)}
+.bk-tab[data-state="done"]:not([aria-selected="true"]){background:color-mix(in srgb,var(--ok) 14%,var(--surface));border-color:var(--ok)}
+.bk-panel{border-radius:14px}
+.bk-panetitle{margin:0;display:flex;align-items:center;gap:8px;font:800 13px var(--display);letter-spacing:.06em;text-transform:uppercase;color:#fff;background:linear-gradient(90deg,var(--brand-bg),var(--orange));clip-path:polygon(0 0,100% 0,calc(100% - 12px) 100%,0 100%);padding:6px 22px 6px 8px;align-self:flex-start;max-width:100%;box-sizing:border-box}
+.bk-panetitle.tip{background:linear-gradient(90deg,var(--orange),var(--gold));color:var(--brand-bg)}
+.bk-panetitle span{flex:none;background:#fff;color:var(--brand);border-radius:999px;padding:1px 7px;font-size:11px;letter-spacing:0}
+.bk-pane{gap:10px}
+.bk-pane .bk-src{flex:1 1 auto}
+.bk-panel .bk-img.bk-fill{flex:1 1 0;min-height:150px;max-height:none;height:auto;width:100%;object-fit:contain!important;background:var(--surface-2);border-radius:12px}
+/* angket kemandirian */
+.bk-likert{margin:0;padding:0;list-style:none;counter-reset:lk;display:flex;flex-direction:column;gap:8px}
+.bk-likert li{counter-increment:lk;border:1px solid var(--line);border-radius:12px;padding:8px 10px;display:flex;flex-direction:column;gap:6px;background:var(--page)}
+.bk-likert li>span::before{content:counter(lk) ". ";font-weight:800;color:var(--brand)}
+.bk-likert li>span{font-size:14px;line-height:1.35}
+.bk-likert li.miss{border-color:var(--bad);box-shadow:0 0 0 2px color-mix(in srgb,var(--bad) 25%,transparent)}
+.bk-lk{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
+.bk-lk button{all:unset;box-sizing:border-box;text-align:center;padding:6px 0;border-radius:8px;border:1.5px solid var(--line);font:800 13px var(--display);color:var(--brand);background:var(--surface);cursor:pointer}
+.bk-lk button:focus-visible{outline:3px solid var(--gold);outline-offset:1px}
+.bk-lk button[aria-checked="true"]{background:var(--brand-bg);color:var(--on-brand);border-color:var(--brand-bg)}
+@media (max-width:640px){
+  .bk-tab{width:32px;height:32px;font-size:15px}
+  .bk-tabs{gap:6px}
+  .bk-tabhint{font-size:11.5px}
+  .bk-panetitle{font-size:12px}
+}
+@media (max-width:380px){.bk-tabhint br{display:none}.bk-tab{width:30px;height:30px}}
+
+.bk-tabrow.many{flex-wrap:wrap;row-gap:4px}
+.bk-tabrow.many .bk-tabhint{flex-basis:100%}
+.bk-tabrow.many .bk-tabhint br{display:none}
+.bk-tabrow.many .bk-tabs{margin-left:auto}
+.bk-panenav .bk-btn{max-width:64%}
+.bk-panel{position:relative}
+.bk-panel.more{-webkit-mask-image:linear-gradient(#000 calc(100% - 46px),#0003);mask-image:linear-gradient(#000 calc(100% - 46px),#0003)}
+.bk-tabpage .bk-body{position:relative}
+.bk-panel.more+.bk-morecue{display:block}
+.bk-panel .bk-img.bk-fill{min-height:110px}
+.bk-panel .bk-img.bk-fill.cover{object-fit:cover!important}
+.bk-likert li[hidden]{display:none}
+.bk-lkpg{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.bk-lkpg b{font-size:12.5px;color:var(--muted);text-align:center}
+.bk-lkpg .bk-btn{font-size:13.5px;padding:7px 12px}
+.bk-lkpg .bk-btn[hidden]{display:none}
+.bk-lkpg #bk-lkprev[hidden]+b{margin-right:auto}
+
+/* ---------- komponen tambahan subbab 1.2–1.6 ---------- */
+.bk-subnav{display:flex;flex-direction:column;gap:6px;margin-bottom:6px}
+.bk-subnav>b{font:800 12px var(--display);letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.bk-subnav>div{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px}
+.bk-subnav a,.bk-subnav span{display:flex;gap:6px;align-items:center;padding:6px 8px;border-radius:10px;border:1.5px solid var(--line);color:var(--ink);text-decoration:none;font-size:13px;line-height:1.2;min-width:0}
+.bk-subnav i{font:900 12px var(--display);font-style:normal;color:var(--brand)}
+.bk-subnav span[aria-current]{background:var(--brand-bg);border-color:var(--brand-bg);color:var(--on-brand)}
+.bk-subnav span[aria-current] i{color:var(--gold)}
+.bk-nextsub{align-self:center;text-decoration:none;margin-top:2px}
+.bk-sortn>div{grid-template-columns:repeat(var(--n),minmax(0,1fr))}
+.bk-sortn button[aria-pressed="true"]{background:var(--brand-bg);border-color:var(--brand-bg);color:#fff}
+.bk-sortn button{padding:5px 4px;font-size:12.5px}
+.bk-rodwrap{display:flex;flex-direction:column;gap:6px;padding:10px;border-radius:12px;background:var(--surface-2)}
+.bk-rod0,.bk-rod{height:16px;border-radius:8px}
+.bk-rod0{width:72%;background:color-mix(in srgb,var(--muted) 35%,var(--surface));border:1px solid var(--muted)}
+.bk-rod{--h:.5;width:72%;background:color-mix(in srgb,var(--hot) calc(var(--h)*100%),color-mix(in srgb,var(--muted) 35%,var(--surface)));border:1px solid var(--hot);transition:width .25s}
+.bk-rodwrap small{font-size:11.5px;color:var(--muted)}
+.bk-shape{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:10px;align-items:center;background:var(--surface-2);border-radius:12px;padding:8px}
+.bk-shape svg{width:100%;height:auto}
+.bk-shape span{font-size:13.5px}
+.bk-beakers{display:grid;grid-template-columns:1fr auto 1fr auto 1fr;gap:4px;align-items:end;text-align:center}
+.bk-bk{position:relative;height:110px;border:2px solid var(--muted);border-top:0;border-radius:0 0 14px 14px;overflow:hidden;background:var(--surface)}
+.bk-bk i{position:absolute;left:0;right:0;bottom:0;transition:height .3s,background .3s}
+.bk-bk b{position:absolute;inset:auto 0 6px;font:800 15px var(--display);color:#fff;text-shadow:0 1px 2px #0008}
+.bk-beakers>span{font:900 20px var(--display);color:var(--brand);padding-bottom:40px}
+.bk-beakers small{display:block;font-size:11.5px;color:var(--muted);margin-top:3px}
+.bk-sl2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.bk-sl2 .bk-slider label{font-size:13px}
+.bk-hc{width:100%;height:auto;display:block;background:var(--surface-2);border-radius:12px}
+.bk-qbar{height:22px;border-radius:8px;background:var(--surface-2);overflow:hidden}
+.bk-qbar i{display:block;height:100%;background:linear-gradient(90deg,var(--orange),var(--hot));transition:width .25s}
+.bk-sortn>div>span{grid-column:1/-1}
+/* ilustrasi vektor: jangan pernah dipotong */
+.bk-img{object-fit:contain!important;background:#FFF8F1}
+.bk-heroimg{aspect-ratio:auto!important;height:auto;clip-path:none!important;object-fit:contain;border-radius:14px;background:#FFF8F1;border:1px solid var(--line)}
+.bk-pic img{object-fit:contain!important;background:#FFF8F1}
+.bk-tthumb{object-fit:contain!important}
+.bk-hero{grid-template-columns:150px minmax(0,1fr)!important}
+@media (max-width:640px){.bk-hero{grid-template-columns:118px minmax(0,1fr)!important}}
+</style>
+
+<div class="bk-progline" aria-hidden="true"><i id="bk-prog"></i></div>
+<button class="bk-fab" id="bk-menu" aria-label="Buka daftar isi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h10"/></svg></button>
+<span id="bk-ttl" hidden></span><span id="bk-mid" hidden></span><span id="bk-pg" hidden></span>
+<button id="bk-prev" hidden>Sebelumnya</button><button id="bk-next" hidden>Berikutnya</button>
+<main class="bk-stage" id="bk-stage"></main>
+
+<div class="bk-toc" id="bk-toc" hidden>
+  <div class="bk-toc-in" role="dialog" aria-label="Daftar isi">
+    <h2>Daftar isi</h2>
+    <div id="bk-toclist"></div>
+    <div class="bk-sync" id="bk-sync"></div>
+  </div>
+</div>
+
+<script src="config.js"></script>
+<script>
+window.BK_SUBBAB='1.2';
+/* =====================================================================
+   Pengaturan bersama (ENDPOINT, ID video) ada di file config.js.
+   ===================================================================== */
+const SUBBABS = [
+  { no: '1.1', judul: 'Suhu dan Termometer', file: 'index.html' },
+  { no: '1.2', judul: 'Pemuaian Termal', file: '1-2.html' },
+  { no: '1.3', judul: 'Kalor dan Perubahan Suhu', file: '1-3.html' },
+  { no: '1.4', judul: 'Asas Black', file: '1-4.html' },
+  { no: '1.5', judul: 'Kalor Laten dan Perubahan Wujud', file: '1-5.html' },
+  { no: '1.6', judul: 'Perpindahan Kalor', file: '1-6.html' }
+];
+const BKC = window.BK_CONFIG || {};
+const SUB = SUBBABS.find(s => s.no === window.BK_SUBBAB) || SUBBABS[0];
+const CONFIG = {
+  ENDPOINT: BKC.ENDPOINT || '',
+  BUKU: BKC.BUKU || 'Suhu dan Kalor (Edisi Uji Coba)',
+  SUBBAB: SUB.no, JUDUL: SUB.judul,
+  VIDEO: { id: (BKC.VIDEO || {})[SUB.no] || '', judul: SUB.judul }
+};
+const SUB_NEXT = SUBBABS[SUBBABS.indexOf(SUB) + 1] || null;
+
+/* ---------- utilitas ---------- */
+const bq = (s, r = document) => r.querySelector(s), bqa = (s, r = document) => [...r.querySelectorAll(s)];
+/* kode, kelas, dan antrian dipakai bersama semua subbab; data lain disimpan per subbab */
+const LSKEY = k => ['kode', 'kelas', 'antrian'].includes(k) || CONFIG.SUBBAB === '1.1' ? 'bukusaku:' + k : 'bukusaku:' + CONFIG.SUBBAB + ':' + k;
+const LS = {
+  get(k, d) { try { const v = localStorage.getItem(LSKEY(k)); return v == null ? d : JSON.parse(v) } catch (e) { return d } },
+  set(k, v) { try { localStorage.setItem(LSKEY(k), JSON.stringify(v)) } catch (e) {} }
+};
+const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+const fmt = (v, d = 1) => Number(v).toLocaleString('id-ID', { minimumFractionDigits: 0, maximumFractionDigits: d });
+const parseNum = s => { s = String(s).trim().replace(/\s/g, ''); if (!s) return NaN; if (s.includes(',')) s = s.replace(/\./g, '').replace(',', '.'); else if (/^-?\d{1,3}(\.\d{3})+$/.test(s)) s = s.replace(/\./g, ''); return Number(s) };
+const slider = (id, label, min, max, step, val, unit) => `<div class="bk-slider"><label for="bk-${id}">${label} <output id="bk-${id}o">${val} ${unit}</output></label><input type="range" id="bk-${id}" min="${min}" max="${max}" step="${step}" value="${val}"></div>`;
+const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+/* ---------- pengiriman data ke Google Sheets ---------- */
+const BK = window.BK = {
+  kode: () => LS.get('kode', ''),
+  kelas: () => LS.get('kelas', ''),
+  send(jenis, item, data) {
+    const q = LS.get('antrian', []);
+    q.push({ waktu: new Date().toISOString(), kode: BK.kode(), kelas: BK.kelas(), buku: CONFIG.BUKU, subbab: CONFIG.SUBBAB, jenis, item, data });
+    LS.set('antrian', q); BK.flush();
+  },
+  async flush() {
+    const q = LS.get('antrian', []);
+    if (!q.length || !CONFIG.ENDPOINT || !navigator.onLine) { syncNote(); return }
+    try {
+      await fetch(CONFIG.ENDPOINT, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(q) });
+      const now = LS.get('antrian', []); LS.set('antrian', now.slice(q.length));
+    } catch (e) {}
+    syncNote();
+  }
+};
+addEventListener('online', () => BK.flush());
+function syncNote() {
+  const el = bq('#bk-sync'); if (!el) return;
+  const n = LS.get('antrian', []).length;
+  el.innerHTML = `<div><b>Kode siswa:</b> ${esc(BK.kode() || 'belum diisi')}${BK.kelas() ? ' · ' + esc(BK.kelas()) : ''}</div>` +
+    (n ? `<div>${n} jawaban tersimpan di perangkat ini dan akan dikirim ke guru ${CONFIG.ENDPOINT ? 'saat ada sinyal' : 'setelah pengiriman diaktifkan guru'}.</div>` : `<div>Semua jawaban sudah terkirim.</div>`) +
+    `<button class="bk-btn alt" id="bk-gantikode">Ganti kode siswa</button>`;
+  bq('#bk-gantikode').onclick = () => { closeToc(); go(0) };
+}
+
+/* ---------- komponen ---------- */
+const box = (label, inner, cls = '') => `<section class="bk-box ${cls}"><div class="bk-lbl ${cls.includes('warn') ? 'warn' : cls.includes('tip') ? 'tip' : ''}">${label}</div><div class="bk-in">${inner}</div></section>`;
+const header = (kick, h, lead, note) => `<div class="bk-hd"><div><div class="bk-kick"><span class="bk-chip">${CONFIG.SUBBAB}</span>${kick}</div><h2 class="bk-h">${h}</h2>${lead ? `<p class="bk-lead">${lead}</p>` : ''}</div>${note ? `<div class="bk-sticky">${note}</div>` : ''}</div>`;
+const frac = (a, b) => `<span class="bk-frac"><span>${a}</span><span>${b}</span></span>`;
+
+/* pilihan ganda dengan umpan balik per pilihan */
+function mcq(id, no, soal, opsi, kunci, umpan, send = true) {
+  return `<div class="bk-q" data-mcq="${id}"><div class="bk-qn"><b>${no}</b><div><span class="bk-qtype">Pilihan ganda</span><p style="margin:0">${soal}</p>
+  <div class="bk-opts">${opsi.map((o, i) => `<label class="bk-opt"><input type="radio" name="${id}" value="${i}"><b>${'ABCDE'[i]}.</b><span>${o}</span></label>`).join('')}</div>
+  <div class="bk-row"><button class="bk-btn alt" data-cek>Periksa jawaban</button></div><div class="bk-fb" data-fb></div></div></div></div>`;
+}
+function initMcq(el) {
+  const id = el.dataset.mcq, def = MCQ[id], btn = bq('[data-cek]', el), fb = bq('[data-fb]', el);
+  const saved = LS.get('mcq:' + id, null);
+  if (saved) { const r = bq(`input[value="${saved.pilih}"]`, el); if (r) r.checked = true }
+  btn.onclick = () => {
+    const r = bq('input:checked', el); if (!r) { fb.className = 'bk-fb'; fb.textContent = 'Pilih salah satu jawaban dulu.'; return }
+    const p = +r.value, ok = p === def.kunci, first = LS.get('mcq:' + id, null);
+    fb.className = 'bk-fb ' + (ok ? 'ok' : 'bad');
+    fb.innerHTML = `<b>${ok ? 'Tepat.' : 'Belum tepat.'}</b> ${def.umpan[p]}${ok ? '' : ' Coba lagi.'}`;
+    if (!first) { LS.set('mcq:' + id, { pilih: p, benar: ok }); if (def.send) BK.send('pilihan_ganda', id, { pilihan: 'ABCDE'[p], benar: ok, percobaan: 'pertama' }) }
+    else if (ok && !first.benar) { LS.set('mcq:' + id, { pilih: p, benar: true, ulang: true }); if (def.send) BK.send('pilihan_ganda', id, { pilihan: 'ABCDE'[p], benar: true, percobaan: 'ulang' }) }
+    updateScore();
+  };
+}
+
+/* isian angka dengan petunjuk bertahap */
+function num(id, label, unit) {
+  return `<div class="bk-field" data-num="${id}"><label for="n-${id}">${label}</label><div class="bk-num"><input id="n-${id}" inputmode="decimal" autocomplete="off" placeholder="jawaban"><span>${unit}</span><button class="bk-btn alt" data-cek>Periksa</button></div><div class="bk-fb" data-fb></div></div>`;
+}
+function initNum(el) {
+  const id = el.dataset.num, def = NUM[id], inp = bq('input', el), fb = bq('[data-fb]', el), btn = bq('[data-cek]', el);
+  let salah = 0; inp.value = LS.get('num:' + id, '');
+  inp.oninput = () => LS.set('num:' + id, inp.value);
+  inp.onkeydown = e => { if (e.key === 'Enter') btn.click() };
+  btn.onclick = () => {
+    const v = parseNum(inp.value);
+    if (isNaN(v)) { fb.className = 'bk-fb'; fb.textContent = 'Tulis jawabanmu dalam bentuk angka, misalnya 64,4.'; return }
+    const ok = Math.abs(v - def.ans) <= (def.tol ?? Math.max(0.05, Math.abs(def.ans) * 0.01));
+    if (def.send && !LS.get('numsent:' + id, false)) { LS.set('numsent:' + id, true); BK.send('isian_angka', id, { jawaban: v, benar: ok }) }
+    if (ok) { fb.className = 'bk-fb ok'; fb.innerHTML = `<b>Tepat.</b> ${def.sol}` }
+    else { salah++; fb.className = 'bk-fb bad'; fb.innerHTML = salah >= 3 ? `<b>Pembahasan.</b> ${def.sol}` : `<b>Belum tepat.</b> ${def.hints[Math.min(salah - 1, def.hints.length - 1)]}` }
+  };
+}
+
+/* uraian: tulis dulu, lalu bandingkan dengan jawaban contoh dan nilai sendiri */
+function openQ(id, no, soal, opt = {}) {
+  return `<div class="bk-q" data-open="${id}"><div class="bk-qn"><b>${no}</b><div>${opt.type ? `<span class="bk-qtype">${opt.type}</span>` : ''}<label for="t-${id}" style="font-weight:600">${soal}</label>
+  <textarea class="bk-ta ruled" id="t-${id}" placeholder="Tulis jawabanmu dengan kalimatmu sendiri."></textarea>
+  <div class="bk-row"><button class="bk-btn alt" data-kirim>${OPEN[id].model ? 'Kirim dan bandingkan' : 'Kirim jawaban'}</button><span class="bk-sent" data-st></span></div>
+  <div data-after hidden>${OPEN[id].model ? `<div class="bk-model"><b>Contoh jawaban</b>${OPEN[id].model}</div><p class="bk-muted" style="margin:0">Bandingkan dengan jawabanmu. Menurutmu jawabanmu…</p><div class="bk-rate">${['Sudah sesuai', 'Sebagian sesuai', 'Belum sesuai'].map(r => `<button aria-pressed="false">${r}</button>`).join('')}</div>` : ''}</div></div></div></div>`;
+}
+function initOpen(el) {
+  const id = el.dataset.open, ta = bq('textarea', el), st = bq('[data-st]', el), after = bq('[data-after]', el);
+  ta.value = LS.get('open:' + id, ''); ta.oninput = () => LS.set('open:' + id, ta.value);
+  const sent = LS.get('opensent:' + id, null);
+  if (sent) { after.hidden = false; st.textContent = 'Terkirim'; markRate(el, sent.nilai) }
+  bq('[data-kirim]', el).onclick = () => {
+    if (ta.value.trim().length < 5) { st.style.color = 'var(--bad)'; st.textContent = 'Tulis jawabanmu dulu.'; return }
+    st.style.color = ''; st.textContent = 'Terkirim'; after.hidden = false;
+    LS.set('opensent:' + id, { nilai: (LS.get('opensent:' + id, {}) || {}).nilai || null });
+    BK.send('uraian', id, { jawaban: ta.value.trim() });
+  };
+  bqa('.bk-rate button', el).forEach(b => b.onclick = () => {
+    markRate(el, b.textContent); LS.set('opensent:' + id, { nilai: b.textContent });
+    BK.send('nilai_diri', id, { nilai: b.textContent });
+  });
+}
+const markRate = (el, v) => bqa('.bk-rate button', el).forEach(b => b.setAttribute('aria-pressed', b.textContent === v));
+
+/* wajah status belajar */
+const FACE = ['M8 16.5c1.2-1.6 2.5-2.2 4-2.2s2.8.6 4 2.2', 'M8.5 15.5h7', 'M8 14.2c1.2 1.6 2.5 2.2 4 2.2s2.8-.6 4-2.2', 'M7.5 13.5c1 2.6 2.6 3.7 4.5 3.7s3.5-1.1 4.5-3.7z'];
+const FCOL = ['var(--bad)', 'var(--orange)', 'var(--gold)', 'var(--ok)'];
+const STATUS = ['Belum paham', 'Mulai paham', 'Sudah paham', 'Bisa menjelaskan ke orang lain'];
+const face = i => `<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10.5" fill="${FCOL[i]}"/><circle cx="8.8" cy="9.6" r="1.3" fill="#2b1a1c"/><circle cx="15.2" cy="9.6" r="1.3" fill="#2b1a1c"/><path d="${FACE[i]}" stroke="#2b1a1c" stroke-width="1.6" fill="${i == 3 ? '#2b1a1c' : 'none'}" stroke-linecap="round"/></svg>`;
+const emoji = id => `<div class="bk-emoji" data-emoji="${id}" role="group">${STATUS.map((s, i) => `<button aria-pressed="false" data-v="${i}">${face(i)}${s}</button>`).join('')}</div>`;
+function initEmoji(el) {
+  const id = el.dataset.emoji, v = LS.get('emo:' + id, null);
+  const mark = x => bqa('button', el).forEach(b => b.setAttribute('aria-pressed', b.dataset.v == x));
+  if (v != null) mark(v);
+  bqa('button', el).forEach(b => b.onclick = () => { mark(b.dataset.v); LS.set('emo:' + id, +b.dataset.v); if (!el.dataset.nosend) BK.send('status_belajar', id, { status: STATUS[b.dataset.v] }) });
+}
+
+/* video YouTube: dimuat setelah diketuk */
+function video() {
+  const v = CONFIG.VIDEO;
+  if (!v.id) return `<div class="bk-video"><div><svg width="54" height="54" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.6"><rect x="2.5" y="5" width="19" height="14" rx="3"/><path d="M10 9.2v5.6l4.8-2.8z" fill="#fff"/></svg><p>Video "${esc(v.judul)}" akan ditambahkan guru di sini.</p></div></div>`;
+  return `<div class="bk-video" id="bk-vid" style="background:#1a0f10 url(https://i.ytimg.com/vi/${v.id}/hqdefault.jpg) center/cover"><button aria-label="Putar video ${esc(v.judul)}"><svg width="28" height="28" viewBox="0 0 24 24"><path d="M8 5v14l11-7z" fill="#fff"/></svg></button></div><a class="bk-muted" href="https://www.youtube.com/watch?v=${v.id}" target="_blank" rel="noopener">Video tidak muncul? Buka di YouTube</a>`;
+}
+function initVideo() {
+  const w = bq('#bk-vid'); if (!w) return;
+  bq('button', w).onclick = () => { w.innerHTML = `<iframe src="https://www.youtube-nocookie.com/embed/${CONFIG.VIDEO.id}?autoplay=1&rel=0" title="${esc(CONFIG.VIDEO.judul)}" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen></iframe>`; BK.send('video', 'putar', { id: CONFIG.VIDEO.id }) };
+}
+function stopVideo() { const f = bq('#bk-vid iframe'); if (f) { const w = bq('#bk-vid'); w.innerHTML = `<button aria-label="Putar video"><svg width="28" height="28" viewBox="0 0 24 24"><path d="M8 5v14l11-7z" fill="#fff"/></svg></button>`; initVideo() } }
+
+/* ---------- ikon kotak ---------- */
+const IC = {
+  target: '<circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="4"/><path d="M12 12l7-7M16 5h3v3"/>',
+  clock: '<circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/>',
+  key: '<circle cx="8" cy="12" r="4"/><path d="M12 12h9M18 12v3M21 12v2"/>',
+  ask: '<circle cx="12" cy="12" r="9"/><path d="M9.6 9.3a2.5 2.5 0 1 1 3.4 2.3c-.7.3-1 .8-1 1.5v.6M12 17h.01"/>',
+  pen: '<path d="M4 20l1-4L16 5l3 3L8 19z"/><path d="M14 7l3 3"/>',
+  gear: '<circle cx="12" cy="12" r="3"/><path d="M12 3v3M12 18v3M3 12h3M18 12h3M5.6 5.6l2.1 2.1M16.3 16.3l2.1 2.1M5.6 18.4l2.1-2.1M16.3 7.7l2.1-2.1"/>',
+  bulb: '<path d="M9 18h6M10 21h4M12 3a6 6 0 0 0-3.5 10.9c.6.5 1 1.2 1 2.1h5c0-.9.4-1.6 1-2.1A6 6 0 0 0 12 3z"/>',
+  warn: '<path d="M12 3l9.5 17h-19z"/><path d="M12 10v4M12 17h.01"/>',
+  search: '<circle cx="10.5" cy="10.5" r="6"/><path d="M15 15l5 5"/>',
+  link: '<path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/>',
+  slide: '<path d="M4 12h16"/><circle cx="9" cy="12" r="2.6"/><path d="M4 7h16M4 17h16" opacity=".35"/>',
+  book: '<path d="M4 5a2 2 0 0 1 2-2h13v15H6a2 2 0 0 0-2 2z"/><path d="M4 20a2 2 0 0 0 2 2h13v-4"/>',
+  therm: '<path d="M14 14.8V5a2 2 0 0 0-4 0v9.8a4 4 0 1 0 4 0z"/><path d="M12 9v7"/>',
+  play: '<rect x="3" y="5" width="18" height="14" rx="3"/><path d="M10 9v6l5-3z"/>',
+  note: '<path d="M5 3h10l4 4v14H5z"/><path d="M8 11h8M8 15h6"/>',
+  flask: '<path d="M9 3h6M10 3v6l-5 9a2 2 0 0 0 1.8 3h10.4a2 2 0 0 0 1.8-3l-5-9V3"/><path d="M7.5 15h9"/>',
+  chart: '<path d="M4 4v16h16"/><path d="M7 15l4-4 3 3 5-6"/>',
+  send: '<path d="M21 3L3 10l7 3 3 7z"/><path d="M10 13l5-5"/>',
+  arrows: '<path d="M4 12h16M14 6l6 6-6 6"/>',
+  check: '<circle cx="12" cy="12" r="9"/><path d="M8 12.5l2.5 2.5L16 9.5"/>',
+  heart: '<path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z"/>'
+};
+const icon = n => `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${IC[n] || IC.note}</svg>`;
+const T = (id, label, ic, teaser, html, o = {}) => ({ id, label, ic, teaser, html, ...o });
+const thumb = (src, alt) => `<img class="bk-tthumb" src="img/${src}.svg" alt="${alt}">`;
+
+/* ---------- angket kemandirian belajar (12 butir, sama dengan angket studi pendahuluan) ---------- */
+const KMD = [
+  ['Saya mempelajari materi fisika lebih dulu sebelum dijelaskan guru di kelas.', 'Inisiatif', 1],
+  ['Saya menunda belajar fisika sampai mendekati hari ulangan.', 'Disiplin', -1],
+  ['Saya berani mencoba mengerjakan soal fisika yang belum pernah dicontohkan guru.', 'Kepercayaan diri', 1],
+  ['Saya baru mengetahui bagian materi fisika yang belum saya kuasai setelah guru membagikan nilai ulangan.', 'Evaluasi diri', -1],
+  ['Saya mengerjakan tugas fisika sampai selesai walaupun guru tidak memeriksanya.', 'Tanggung jawab', 1],
+  ['Saya cepat berhenti belajar fisika ketika materinya mulai terasa sulit.', 'Motivasi', -1],
+  ['Saya belajar fisika pada waktu yang sudah saya rencanakan sendiri, meskipun tidak ada tugas atau ulangan.', 'Disiplin', 1],
+  ['Saya baru membuka catatan fisika ketika ada tugas atau ulangan.', 'Inisiatif', -1],
+  ['Setelah ulangan, saya memeriksa kembali soal yang salah untuk mengetahui penyebabnya.', 'Evaluasi diri', 1],
+  ['Saya memilih melewati soal fisika yang terlihat sulit tanpa mencobanya.', 'Kepercayaan diri', -1],
+  ['Saya ingin memahami alasan di balik rumus fisika, bukan hanya cara memakainya.', 'Motivasi', 1],
+  ['Saya menyalin jawaban tugas fisika dari teman ketika waktunya mepet.', 'Tanggung jawab', -1]
+];
+const SKALA4 = [['SS', 'Sangat setuju'], ['S', 'Setuju'], ['TS', 'Tidak setuju'], ['STS', 'Sangat tidak setuju']];
+function angketHTML() {
+  return `<p style="margin:0">Pilih jawaban yang paling sesuai dengan <b>kebiasaanmu selama ini</b>, bukan yang menurutmu seharusnya. Tidak ada jawaban benar atau salah, dan jawabanmu tidak memengaruhi nilai.</p>
+  <p class="bk-muted" style="margin:0">SS = sangat setuju · S = setuju · TS = tidak setuju · STS = sangat tidak setuju</p>
+  <ol class="bk-likert" id="bk-angket">${KMD.map((k, i) => `<li data-i="${i}"><span>${k[0]}</span><div class="bk-lk" role="radiogroup" aria-label="Pernyataan ${i + 1}">${SKALA4.map((s, j) => `<button role="radio" aria-checked="false" data-v="${j}" title="${s[1]}">${s[0]}</button>`).join('')}</div></li>`).join('')}</ol>
+  <div class="bk-lkpg"><button class="bk-btn alt" id="bk-lkprev">‹ Sebelumnya</button><b id="bk-lkpos">Butir 1–4 dari 12</b><button class="bk-btn" id="bk-lknext">Berikutnya ›</button><button class="bk-btn" id="bk-kirimangket">Kirim angket</button></div><span class="bk-sent" id="bk-angst"></span>`;
+}
+function initAngket() {
+  const st = LS.get('angket', {});
+  bqa('#bk-angket li').forEach(li => {
+    const i = li.dataset.i; const mark = v => bqa('button', li).forEach(b => b.setAttribute('aria-checked', b.dataset.v == v));
+    if (st[i] != null) mark(st[i]);
+    bqa('button', li).forEach(b => b.onclick = () => { mark(b.dataset.v); st[i] = +b.dataset.v; LS.set('angket', st); li.classList.remove('miss') });
+  });
+  let grp = 0; const lis = bqa('#bk-angket li');
+  const showGrp = g => { grp = Math.max(0, Math.min(2, g)); lis.forEach((li, i) => li.hidden = Math.floor(i / 4) !== grp); bq('#bk-lkpos').textContent = `Butir ${grp * 4 + 1}–${grp * 4 + 4} dari 12`; bq('#bk-lkprev').hidden = grp === 0; bq('#bk-lknext').hidden = grp === 2; bq('#bk-kirimangket').hidden = grp !== 2; const pn = bq('#bk-angket').closest('.bk-panel'); if (pn) pn.scrollTop = 0 };
+  bq('#bk-lkprev').onclick = () => showGrp(grp - 1); bq('#bk-lknext').onclick = () => showGrp(grp + 1); showGrp(0);
+  if (LS.get('angketsent', false)) bq('#bk-angst').textContent = 'Angket sudah terkirim. Kamu boleh mengubah dan mengirim ulang.';
+  bq('#bk-kirimangket').onclick = () => {
+    const kosong = KMD.map((k, i) => st[i] == null ? i : -1).filter(i => i >= 0);
+    bqa('#bk-angket li').forEach(li => li.classList.toggle('miss', kosong.includes(+li.dataset.i)));
+    if (kosong.length) { showGrp(Math.floor(kosong[0] / 4)); bq('#bk-angst').style.color = 'var(--bad)'; bq('#bk-angst').textContent = `Masih ada ${kosong.length} pernyataan yang belum dijawab (bertanda merah).`; return }
+    const skor = KMD.map((k, i) => k[2] > 0 ? 4 - st[i] : st[i] + 1);
+    const data = { skor_total: skor.reduce((a, b) => a + b, 0), skor_maks: KMD.length * 4 };
+    KMD.forEach((k, i) => { data['butir_' + (i + 1)] = SKALA4[st[i]][0] + ' (skor ' + skor[i] + ', ' + k[1].toLowerCase() + ')' });
+    BK.send('angket_kemandirian', 'akhir_subbab_' + CONFIG.SUBBAB, data);
+    LS.set('angketsent', true); bq('#bk-angst').style.color = ''; bq('#bk-angst').textContent = 'Angket terkirim. Terima kasih!'; refreshTiles();
+  };
+}
+
+
+function renderTujuanCek() {
+  const r = LS.get('rencana', { tujuan: [] }), done = LS.get('tercapai', []), w = bq('#bk-tjcek');
+  const tj = r.tujuan || [];
+  w.innerHTML = tj.length ? `<p>Di awal kamu ingin menguasai tujuan berikut${r.waktu ? ` dalam ${r.waktu}` : ''}. Centang yang sudah tercapai.</p>${tj.map(i => `<label class="bk-check"><input type="checkbox" data-tc="${i}" ${done.includes(i) ? 'checked' : ''}><span>${TUJUAN[i]}</span></label>`).join('')}` : `<p>Kamu belum menyimpan rencana belajar.</p><button class="bk-btn alt" id="bk-kerencana">Buka rencana belajar</button>`;
+  bqa('[data-tc]').forEach(c => c.onchange = () => LS.set('tercapai', bqa('[data-tc]').filter(x => x.checked).map(x => +x.dataset.tc)));
+  const kb = bq('#bk-kerencana'); if (kb) kb.onclick = () => { closeSheet(); go(1); setTimeout(() => openTile('rencana', 'tujuan'), 350) };
+}
+
+
+/* ---------- halaman bersama: dipakai semua subbab ---------- */
+const closing = () => `<p class="bk-closing">Subbab ${CONFIG.SUBBAB} selesai. Teruslah bertanya, mencoba, dan belajar.</p>${SUB_NEXT ? `<a class="bk-btn bk-nextsub" href="${SUB_NEXT.file}">Lanjut ke ${SUB_NEXT.no} ${SUB_NEXT.judul} ›</a>` : ''}`;
+
+function coverPage(o) {
+  return { id: 'sampul', toc: 'Sampul dan kode siswa', cover: true, html: () => `
+  <div class="bk-cover">
+    <small>Buku Saku Fisika XI SMA · Seri Kemandirian Belajar</small>
+    <h1>SUHU<br>DAN KALOR</h1>
+    <h2>Subbab ${CONFIG.SUBBAB} · ${CONFIG.JUDUL}</h2>
+    <p class="bk-hand">${o.hand}</p>
+    <div class="bk-login">
+      <div class="bk-row" style="align-items:flex-end">
+        <label for="bk-kode">Kode siswa<input id="bk-kode" autocomplete="off" placeholder="mis. XI2-07"></label>
+        <label for="bk-kelas">Kelas<input id="bk-kelas" autocomplete="off" placeholder="mis. XI-2"></label>
+      </div>
+      <p class="bk-muted" style="margin:0">Pakai kode dari gurumu, bukan nama. Jawaban latihan, refleksi, dan bagian yang kamu buka dikirim ke guru untuk penelitian tanpa menyebut namamu. Latihan tidak dinilai, jadi jawablah dengan jujur.</p>
+      <div class="bk-row"><button class="bk-btn" id="bk-mulai">Mulai belajar</button><span class="bk-muted" id="bk-lanjut"></span></div>
+    </div>
+    <p class="bk-coverfoot">Edisi uji coba. Ketuk nomor bagian untuk membaca, geser layar untuk berpindah halaman.</p>
+  </div>`,
+    init() {
+      const k = bq('#bk-kode'), c = bq('#bk-kelas'); k.value = BK.kode(); c.value = BK.kelas();
+      const last = LS.get('hal', 0);
+      if (last > 0) bq('#bk-lanjut').textContent = `Terakhir kamu membaca halaman ${last + 1}.`;
+      bq('#bk-mulai').onclick = () => {
+        const kv = k.value.trim(); if (!kv) { k.focus(); bq('#bk-lanjut').textContent = 'Isi kode siswa dulu.'; return }
+        const baru = kv !== BK.kode(); LS.set('kode', kv); LS.set('kelas', c.value.trim());
+        if (baru || !LS.get('mulai', false)) { LS.set('mulai', true); BK.send('mulai', 'sampul', {}) }
+        syncNote(); go(last > 0 ? last : 1, 'next', true);
+      };
+    } };
+}
+
+function rencanaPage(o) {
+  return { id: 'rencana', toc: 'Rencana belajarku', kick: o.kick, h: 'Rencana <em>belajarku</em>', lead: 'Sebelum mulai, tentukan sendiri apa yang ingin kamu kuasai dan berapa lama kamu akan belajar.', note: 'Pelajar mandiri selalu mulai dengan rencana.',
+    tiles: [
+      T('tujuan', 'Tujuan belajar', 'target', '', `<p>Setelah mempelajari subbab ini, kamu diharapkan mampu menguasai hal-hal berikut. <b>Centang yang ingin kamu kuasai hari ini.</b></p><div>${TUJUAN.map((t, i) => `<label class="bk-check"><input type="checkbox" data-tj="${i}"><span>${t}</span></label>`).join('')}</div>`),
+      T('waktu', 'Waktu belajarku', 'clock', '', `<p>Berapa lama kamu berencana mempelajari subbab ini?</p><div class="bk-pills" id="bk-waktu">${['15 menit', '30 menit', '45 menit', '60 menit atau lebih'].map(w => `<button aria-pressed="false">${w}</button>`).join('')}</div><div class="bk-row"><button class="bk-btn" id="bk-simpanrencana">Simpan rencanaku</button><span class="bk-sent" id="bk-rst"></span></div>`, { cls: 'tip', done: () => !!LS.get('rencana', {}).mulai }),
+      T('kunci', 'Kata kunci', 'key', '', `<div class="bk-kw">${o.kunci.map(k => `<span>${k}</span>`).join('')}</div>${o.prasyarat ? box('Ingat lagi', o.prasyarat, 'tip') : ''}`)
+    ],
+    init() {
+      const r = LS.get('rencana', { tujuan: [], waktu: '' });
+      bqa('[data-tj]').forEach(c => { c.checked = (r.tujuan || []).includes(+c.dataset.tj) });
+      const mark = w => bqa('#bk-waktu button').forEach(b => b.setAttribute('aria-pressed', b.textContent === w)); mark(r.waktu);
+      bqa('#bk-waktu button').forEach(b => b.onclick = () => mark(b.textContent));
+      bq('#bk-simpanrencana').onclick = () => {
+        const tj = bqa('[data-tj]').filter(c => c.checked).map(c => +c.dataset.tj), w = (bq('#bk-waktu [aria-pressed="true"]') || {}).textContent || '';
+        if (!tj.length) { bq('#bk-rst').style.color = 'var(--bad)'; bq('#bk-rst').textContent = 'Centang minimal satu tujuan di bagian 1.'; return }
+        LS.set('rencana', { tujuan: tj, waktu: w, mulai: new Date().toISOString() });
+        bq('#bk-rst').style.color = ''; bq('#bk-rst').textContent = 'Rencana tersimpan.';
+        BK.send('rencana', 'tujuan', { tujuan: tj.map(i => i + 1).join(', '), waktu: w }); refreshTiles();
+      };
+      bqa('[data-tj]').forEach(c => c.onchange = () => { const cur = LS.get('rencana', { tujuan: [], waktu: '' }); cur.tujuan = bqa('[data-tj]').filter(x => x.checked).map(x => +x.dataset.tj); LS.set('rencana', cur) });
+    } };
+}
+
+function pemantikPage(o) {
+  return { id: 'pemantik', toc: 'Pertanyaan pemantik', kick: o.kick, h: o.h, lead: o.lead, note: o.note,
+    hero: () => `<div class="bk-hero"><img class="bk-heroimg" src="img/${o.img}.svg" alt="${o.alt}"><div class="bk-heroq"><span>Pertanyaan pemantik</span><p>${o.q}</p></div></div>`,
+    tiles: [
+      T('dugaan', 'Dugaan awalku', 'pen', '', openQ('dugaan', '?', `<b>Dugaan awalku.</b> ${o.q} Tidak apa-apa jika belum tepat.`), { done: () => !!LS.get('opensent:dugaan', null) }),
+      ...(o.extraTiles || [])
+    ] };
+}
+
+function labPage(o) {
+  return { id: 'lab', toc: 'Lab virtual: ' + o.name, kick: 'Percobaan ' + CONFIG.SUBBAB, h: `Lab virtual: <em>${o.name.toLowerCase()}</em>`, lead: 'Kerjakan berurutan: amati, tebak, uji, catat data, lalu simpulkan sendiri.', note: o.note || 'Belajar akan lebih bermakna ketika kita mencoba sendiri.',
+    extra: () => `<main id="panel"></main>`,
+    tiles: [
+      T('lab1', 'Amati fenomena', 'search', '', '<div data-labstep="0"></div>'),
+      T('lab2', 'Rumuskan dan prediksi', 'ask', '', '<div data-labstep="1"></div>'),
+      T('lab3', 'Tentukan variabel', 'target', '', '<div data-labstep="2"></div>'),
+      T('lab4', 'Lakukan percobaan', 'flask', '', '<div data-labstep="3"></div>'),
+      T('lab5', 'Data pengamatan', 'chart', '', '<div data-labstep="4"></div>'),
+      T('lab6', 'Analisis dan kesimpulan', 'pen', '', '<div data-labstep="5"></div>'),
+      T('lab7', 'Kembali ke kehidupan', 'heart', '', '<div data-labstep="6"></div>'),
+      T('labkirim', 'Kirim laporan', 'send', '', `<div class="foot"><div class="row"><button class="btn" id="kirimlab">Kirim laporan ke guru</button><button class="btn alt" id="copy">Salin laporan</button></div><span class="hint" id="copymsg">Kirim setelah semua langkah selesai.</span><textarea id="rep" hidden readonly aria-label="Teks laporan"></textarea><p class="hint">Catatan dan jawabanmu tersimpan di perangkat ini.</p></div>`, { cls: 'tip' })
+    ] };
+}
+
+/* video + catatan, dipakai sebagai satu bagian */
+const videoTile = (o) => T('eksplor', 'Video dan eksplorasi', 'play', '', `${video()}<p style="margin:0">${o.tugas}</p><label for="bk-cat" class="bk-muted">Catatan saya</label><textarea class="bk-ta ruled" id="bk-cat" style="min-height:90px" placeholder="Tulis hal penting dari video atau lab virtual."></textarea>`, { done: () => !!LS.get('catatan', '') });
+const initVideoTile = () => { initVideo(); const t = bq('#bk-cat'); if (t) { t.value = LS.get('catatan', ''); t.oninput = () => LS.set('catatan', t.value) } };
+
+/* soal hitung bertahap: langkah demi langkah ditampilkan saat tombol ditekan */
+const stepper = (id, soal, steps, jawab) => `<p>${soal}</p><div class="bk-steps" id="bk-${id}">${steps.map((s, i) => `<div ${i ? 'hidden' : ''}><h5><i>${String(i + 1).padStart(2, '0')}</i>${s[0]}</h5><div class="bk-formula" style="font-size:18px;line-height:1.6">${s[1]}</div></div>`).join('')}<div hidden><h5><i>✓</i>Jawaban akhir</h5><div class="bk-answer">${jawab}</div></div></div><div class="bk-row"><button class="bk-btn alt" data-stepper="${id}">Tampilkan langkah berikutnya</button></div><p class="bk-muted" style="margin:0">Coba tebak dulu langkahnya sebelum menekan tombol.</p>`;
+document.addEventListener('click', e => {
+  const b = e.target.closest('[data-stepper]'); if (!b) return;
+  const w = bq('#bk-' + b.dataset.stepper), h = bq(':scope > div[hidden]', w); if (h) h.hidden = false;
+  if (!bq(':scope > div[hidden]', w)) { b.disabled = true; b.textContent = 'Semua langkah sudah tampil' }
+});
+
+/* klasifikasi: pilih satu dari beberapa kelompok untuk tiap pernyataan */
+const sorter = (id, items, groups) => `<div class="bk-sort bk-sortn" id="bk-${id}" style="--n:${groups.length}">${items.map((s, i) => `<div data-i="${i}"><span>${s[0]}</span>${groups.map((g, j) => `<button data-g="${j}" aria-pressed="false">${g}</button>`).join('')}</div>`).join('')}</div><div class="bk-row"><button class="bk-btn alt" data-sortck="${id}">Periksa</button></div><div class="bk-fb" id="bk-${id}fb"></div>`;
+function initSorter(id, items, sendItem) {
+  const st = LS.get('sort:' + id, {});
+  bqa(`#bk-${id} > div`).forEach(r => { const i = r.dataset.i; if (st[i] != null) bq(`[data-g="${st[i]}"]`, r).setAttribute('aria-pressed', true);
+    bqa('button', r).forEach(b => b.onclick = () => { bqa('button', r).forEach(x => x.setAttribute('aria-pressed', x === b)); r.className = ''; st[i] = +b.dataset.g; LS.set('sort:' + id, st) }) });
+  bq(`[data-sortck="${id}"]`).onclick = () => {
+    let n = 0, isi = 0; bqa(`#bk-${id} > div`).forEach(r => { const p = bq('[aria-pressed="true"]', r); if (!p) { r.className = ''; return } isi++; const ok = +p.dataset.g === items[r.dataset.i][1]; n += ok; r.className = ok ? 'ok' : 'bad' });
+    const fb = bq(`#bk-${id}fb`);
+    if (isi < items.length) { fb.className = 'bk-fb'; fb.textContent = `Masih ada ${items.length - isi} pernyataan yang belum kamu pilih.`; return }
+    fb.className = 'bk-fb ' + (n === items.length ? 'ok' : 'bad');
+    fb.innerHTML = n === items.length ? '<b>Semua tepat.</b>' : `<b>${n} dari ${items.length} tepat.</b> Perbaiki yang bergaris merah, lalu periksa lagi.`;
+    if (!LS.get('sortsent:' + id, false)) { LS.set('sortsent:' + id, true); BK.send('klasifikasi', sendItem, { benar: n, dari: items.length }) }
+  };
+}
+
+function cekPage(o) {
+  return { id: 'cek', toc: 'Ayo cek pemahaman', kick: o.kick, h: 'Ayo cek <em>pemahaman!</em>', lead: o.lead || 'Jawaban pertamamu dikirim ke guru, tetapi kamu boleh mencoba lagi.', note: o.note || 'Setiap langkah kecil dalam belajar adalah kemajuan besar.',
+    extra: () => `<div class="bk-fb" id="bk-score"></div>`,
+    tiles: o.tiles };
+}
+
+function refleksiPage(o) {
+  const tiles = [
+    T('status', 'Status belajarku', 'chart', '', `<p class="bk-muted" style="margin:0">Untuk setiap pernyataan, pilih yang paling sesuai denganmu.</p>${PAHAM.map((p, i) => `<div class="bk-srow"><b>${p}</b>${emoji('paham' + (i + 1))}</div>`).join('')}`, { done: () => PAHAM.every((p, i) => LS.get('emo:paham' + (i + 1), null) != null) }),
+    T('cekrencana', 'Kembali ke rencanaku', 'target', '', `<div id="bk-tjcek"></div>`, { cls: 'tip', onOpen: renderTujuanCek })
+  ];
+  if (o.angket) tiles.push(T('angket', 'Angket kemandirian belajar', 'note', '', angketHTML(), { done: () => LS.get('angketsent', false) }));
+  tiles.push(T('lanjut', 'Langkah berikutnya', 'send', '', `<p>Bagian mana yang paling membantumu belajar? (boleh lebih dari satu)</p><div class="bk-pills" id="bk-strat">${o.strategi.map(s => `<button aria-pressed="false">${s}</button>`).join('')}</div>${openQ('r_lanjut', '→', 'Apa yang akan kamu lakukan untuk bagian yang belum kamu pahami?')}<div class="bk-row"><button class="bk-btn" id="bk-kirimref">Kirim refleksiku</button><span class="bk-sent" id="bk-refst"></span></div>`, { done: () => LS.get('refsent', false) }));
+  return { id: 'refleksi', toc: 'Refleksi diri', kick: o.kick, h: 'Refleksi <em>diri</em>', lead: 'Lihat kembali rencanamu, nilai sendiri pemahamanmu, lalu tentukan langkah berikutnya.', note: o.note || 'Pemahaman yang baik adalah hasil dari latihan.',
+    extra: () => closing(),
+    tiles,
+    init() {
+      if (o.angket) initAngket();
+      bqa('[data-emoji]', bq('[data-page="refleksi"]')).forEach(e => e.dataset.nosend = '1');
+      const st = LS.get('strategi', []);
+      bqa('#bk-strat button').forEach(b => { b.setAttribute('aria-pressed', st.includes(b.textContent)); b.onclick = () => { b.setAttribute('aria-pressed', b.getAttribute('aria-pressed') !== 'true'); LS.set('strategi', bqa('#bk-strat [aria-pressed="true"]').map(x => x.textContent)) } });
+      bq('#bk-kirimref').onclick = () => {
+        const r = LS.get('rencana', { tujuan: [] }), tc = LS.get('tercapai', []);
+        const status = PAHAM.map((p, i) => { const v = LS.get('emo:paham' + (i + 1), null); return v == null ? '-' : STATUS[v] });
+        if (status.includes('-')) { bq('#bk-refst').style.color = 'var(--bad)'; bq('#bk-refst').textContent = `Isi dulu ${PAHAM.length} status di bagian 1.`; return }
+        const data = {}; PAHAM.forEach((p, i) => { data['status_' + (i + 1)] = p + ' → ' + status[i] });
+        Object.assign(data, { tujuan_dipilih: (r.tujuan || []).map(i => i + 1).join(', '), tujuan_tercapai: tc.map(i => i + 1).join(', '), strategi: LS.get('strategi', []).join('; '), rencana_lanjut: LS.get('open:r_lanjut', '') });
+        BK.send('refleksi', 'akhir_subbab', data);
+        LS.set('refsent', true); bq('#bk-refst').style.color = ''; bq('#bk-refst').textContent = 'Refleksi terkirim. Terima kasih!'; refreshTiles();
+      };
+    } };
+}
+
+/* =================== SUBBAB 1.2 PEMUAIAN TERMAL =================== */
+const KICK = 'Pemuaian termal';
+const TUJUAN = [
+  'Menjelaskan penyebab pemuaian berdasarkan gerak partikel.',
+  'Membedakan muai panjang, muai luas, dan muai volume.',
+  'Menghitung pertambahan panjang, luas, dan volume benda akibat kenaikan suhu.',
+  'Menjelaskan anomali air pada rentang suhu 0–4 °C.',
+  'Menjelaskan penerapan pemuaian dalam kehidupan sehari-hari.'
+];
+const PAHAM = ['Saya memahami mengapa benda memuai.', 'Saya dapat membedakan muai panjang, luas, dan volume.', 'Saya dapat menghitung pemuaian benda.', 'Saya dapat menjelaskan penerapan pemuaian.'];
+const MCQ = {
+  c1: { kunci: 1, send: true, umpan: ['Periksa satuannya: hasil perhitungan dalam meter perlu dikalikan 1.000 untuk menjadi milimeter.', 'ΔL = L₀ · α · ΔT = 2 × 1,7 × 10⁻⁵ × 50 = 1,7 × 10⁻³ m = 1,7 mm.', 'Nilai ini dua kali jawaban yang benar. Periksa lagi perkaliannya: 2 × 1,7 × 10⁻⁵ × 50.', 'Periksa pangkat sepuluhnya: 1,7 × 10⁻³ m sama dengan 1,7 mm, bukan 17 mm.', 'Panjang awalnya 2 m, bukan 1 m. Masukkan L₀ = 2 m.'] },
+  c2: { kunci: 2, send: true, umpan: ['α adalah koefisien muai panjang.', '2α adalah koefisien muai luas (β), karena luas melibatkan dua dimensi.', 'Volume melibatkan tiga dimensi, sehingga γ = 3α.', 'Koefisien muai volume lebih besar dari α, bukan lebih kecil.', 'Hubungannya berupa perkalian dengan bilangan bulat, bukan pangkat.'] },
+  c3: { kunci: 1, send: true, umpan: ['Itu berlaku untuk hampir semua zat, tetapi air berbeda pada rentang 0–4 °C.', 'Ini anomali air: pada 0–4 °C volume air justru berkurang saat dipanaskan, dan mencapai volume terkecil pada 4 °C.', 'Volume air berubah ketika suhunya berubah.', 'Urutannya terbalik: dari 0 °C ke 4 °C volume air berkurang dulu, baru bertambah setelah 4 °C.', 'Air di atas 0 °C tetap cair dan tidak berubah menjadi es.'] }
+};
+const NUM = {
+  b1: { ans: 4.8, send: true, hints: ['β = 2α. Kalikan 2,4 dengan 2.', 'Tulis jawaban sebagai angka di depan × 10⁻⁵, misalnya 4,8.'], sol: 'β = 2α = 2 × 2,4 × 10⁻⁵ = 4,8 × 10⁻⁵ /°C.' },
+  b2: { ans: 2.4, send: true, hints: ['ΔA = A₀ · β · ΔT = 0,5 × 4,8 × 10⁻⁵ × 100.', '0,5 × 4,8 × 100 = 240, jadi ΔA = 240 × 10⁻⁵ m². Ubah ke bentuk … × 10⁻³.'], sol: 'ΔA = 0,5 × 4,8 × 10⁻⁵ × 100 = 2,4 × 10⁻³ m² (sekitar 24 cm²).' },
+  b3: { ans: 1.7, send: true, hints: ['α = ΔL / (L₀ · ΔT). Ubah dulu 3,4 mm menjadi meter.', '3,4 mm = 3,4 × 10⁻³ m. Bagi dengan 2 × 100 = 200.'], sol: 'α = 3,4 × 10⁻³ / (2 × 100) = 1,7 × 10⁻⁵ /°C. Nilai ini sesuai dengan koefisien muai panjang tembaga.' }
+};
+const OPEN = {
+  dugaan: { model: 'Pada siang hari yang terik, suhu rel naik sehingga baja memuai dan bertambah panjang. Celah memberi ruang bagi rel untuk memuai. Tanpa celah, rel saling mendorong dan dapat melengkung.' },
+  c4: { model: 'Lubangnya ikut membesar. Ketika pelat dipanaskan, seluruh bagian pelat memuai ke arah luar, termasuk tepi lubang. Jarak antarpartikel di sekeliling lubang bertambah, sehingga diameter lubang bertambah, bukan menyusut.' },
+  c5: { model: 'Kaca adalah penghantar kalor yang buruk. Saat air panas dituang, bagian dalam kaca langsung panas dan memuai, sedangkan bagian luarnya masih dingin. Pada kaca tebal perbedaan suhu ini lebih besar, sehingga pemuaian yang tidak merata menimbulkan tegangan yang membuat kaca retak.' },
+  r_lanjut: {}
+};
+const MAT = [['Baja', 1.2], ['Tembaga', 1.7], ['Aluminium', 2.4]];
+
+const PAGES = [
+coverPage({ hand: 'Perubahan kecil, dampak besar.' }),
+rencanaPage({ kick: KICK, kunci: ['Pemuaian', 'Muai panjang', 'Muai luas', 'Muai volume', 'Koefisien muai (α, β, γ)', 'Anomali air', 'Keping bimetal'], prasyarat: '<p>Perubahan suhu ΔT = suhu akhir − suhu awal. Nilai ΔT dalam °C sama dengan dalam K (subbab 1.1).</p>' }),
+pemantikPage({ kick: KICK, h: 'Pemuaian <em>termal</em>', lead: 'Ketika suhu berubah, ukuran benda dapat berubah.', note: 'Zat memuai karena partikelnya bergerak lebih cepat dan saling menjauh.', img: 'p2-rel', alt: 'Celah pada sambungan rel kereta api', q: 'Mengapa sambungan rel kereta api sengaja diberi celah kecil, padahal rel terbuat dari baja yang kokoh?' }),
+
+{ id: 'konsep', toc: 'Mengapa benda memuai?', kick: KICK, h: 'Mengapa benda <em>memuai?</em>', lead: 'Sebagian besar zat memuai saat dipanaskan karena partikelnya bergerak lebih cepat dan <span class="bk-hl">saling menjauh</span>.', note: 'Perubahan kecil, dampak besar.',
+  tiles: [
+    T('panaskan', 'Coba panaskan batangnya', 'slide', '', `<p class="bk-muted" style="margin:0">Pilih bahan batang (panjang awal 1 m), lalu geser kenaikan suhunya.</p><div class="bk-pills" id="bk-mat">${MAT.map((m, i) => `<button aria-pressed="${i === 0}" data-i="${i}">${m[0]}</button>`).join('')}</div><div class="bk-rodwrap"><div class="bk-rod0"></div><div class="bk-rod" id="bk-rod"></div><small>Pertambahan panjang digambar 100× lebih besar agar terlihat.</small></div><div class="bk-slider"><label for="bk-dt">Kenaikan suhu ΔT <output id="bk-dto">50 °C</output></label><input type="range" id="bk-dt" min="0" max="100" step="5" value="50"></div><div class="bk-scales" style="grid-template-columns:repeat(2,minmax(0,1fr))"><div><span>Koefisien muai α</span><b id="bk-al">1,2 × 10⁻⁵ /°C</b></div><div><span>Pertambahan panjang ΔL</span><b id="bk-dl">0,6 mm</b></div></div><p class="bk-muted" id="bk-matnote" style="margin:0"></p>`, { cls: 'tip' }),
+    T('konsep', 'Konsep inti', 'bulb', '', `<p>Sebagian besar zat memuai saat dipanaskan karena partikelnya bergerak lebih cepat dan saling menjauh. Pada zat padat dikenal muai panjang, muai luas, dan muai volume.</p>${box('Zat padat', '<p>Memuai panjang, luas, dan volume, bergantung pada bentuk bendanya.</p>')}${box('Zat cair dan gas', '<p>Pada tingkat SMA umumnya dibahas sebagai pemuaian volume, karena zat cair dan gas tidak memiliki bentuk tetap.</p>')}${box('Ingat!', '<p>Besar pemuaian bergantung pada <b>ukuran awal</b>, <b>jenis bahan</b> (koefisien muai), dan <b>besar kenaikan suhu</b>.</p>', 'tip')}`),
+    T('anomali', 'Anomali air (0–4 °C)', 'chart', '', `<img class="bk-img bk-fill" src="img/p2-anomali.svg" alt="Grafik volume air terhadap suhu, terendah pada 4 °C"><p>Air berperilaku tidak biasa. Pada rentang 0–4 °C, air justru <b>menyusut</b> saat dipanaskan dan mencapai volume terkecil (massa jenis terbesar) pada 4 °C. Setelah 4 °C, volume air bertambah seperti zat lain.</p>`)
+  ],
+  init() {
+    let m = 0; const s = bq('#bk-dt');
+    const upd = () => { const dt = +s.value, a = MAT[m][1], dl = a * 1e-5 * 1 * dt * 1000;
+      bq('#bk-dto').textContent = dt + ' °C'; bq('#bk-al').textContent = fmt(a) + ' × 10⁻⁵ /°C'; bq('#bk-dl').textContent = fmt(dl, 2) + ' mm';
+      bq('#bk-rod').style.width = (72 * (1 + dl / 10)) + '%'; bq('#bk-rod').style.setProperty('--h', Math.min(1, dt / 100));
+      bq('#bk-matnote').textContent = `ΔL = L₀ · α · ΔT = 1 × ${fmt(a)} × 10⁻⁵ × ${dt} = ${fmt(dl, 2)} mm`; };
+    s.oninput = upd;
+    bqa('#bk-mat button').forEach(b => b.onclick = () => { m = +b.dataset.i; bqa('#bk-mat button').forEach(x => x.setAttribute('aria-pressed', x === b)); upd() });
+    upd();
+  } },
+
+{ id: 'rumus', toc: 'Jenis pemuaian dan rumusnya', kick: KICK, h: 'Jenis pemuaian <em>dan rumusnya</em>', lead: 'Pada zat padat, bentuk benda menentukan jenis pemuaian yang diperhatikan.', note: 'β = 2α dan γ = 3α.',
+  tiles: [
+    T('panjang', 'Muai panjang', 'book', '', `<div class="bk-shape"><svg viewBox="0 0 300 70" aria-hidden="true"><rect x="10" y="14" width="230" height="16" rx="8" fill="var(--surface-2)" stroke="var(--muted)"/><rect x="10" y="40" width="270" height="16" rx="8" fill="color-mix(in srgb,var(--hot) 35%,var(--surface))" stroke="var(--hot)"/><path d="M240 64h40" stroke="var(--hot)" stroke-width="2"/><text x="252" y="68" font-size="11" fill="var(--hot)">ΔL</text></svg><span>Terjadi pada benda berbentuk batang, misalnya rel dan kabel.</span></div><div class="bk-main" style="border-radius:12px;padding:8px 12px"><div class="bk-formula">ΔL = L<sub>0</sub> · α · ΔT</div></div><dl class="bk-dl"><dt>ΔL</dt><dd>pertambahan panjang (m)</dd><dt>L<sub>0</sub></dt><dd>panjang awal (m)</dd><dt>α</dt><dd>koefisien muai panjang (/°C)</dd><dt>ΔT</dt><dd>perubahan suhu (°C)</dd></dl><p class="bk-muted" style="margin:0">Panjang akhir: L = L<sub>0</sub> + ΔL = L<sub>0</sub>(1 + α · ΔT).</p>`),
+    T('luas', 'Muai luas', 'book', '', `<div class="bk-shape"><svg viewBox="0 0 300 80" aria-hidden="true"><rect x="40" y="18" width="150" height="52" fill="color-mix(in srgb,var(--hot) 30%,var(--surface))" stroke="var(--hot)" stroke-dasharray="4 3"/><rect x="40" y="26" width="130" height="44" fill="var(--surface-2)" stroke="var(--muted)"/><text x="196" y="50" font-size="12" fill="var(--hot)">ΔA</text></svg><span>Terjadi pada benda berbentuk lempeng, misalnya pelat dan kaca jendela.</span></div><div class="bk-main" style="border-radius:12px;padding:8px 12px"><div class="bk-formula">ΔA = A<sub>0</sub> · β · ΔT</div></div><dl class="bk-dl"><dt>ΔA</dt><dd>pertambahan luas (m²)</dd><dt>A<sub>0</sub></dt><dd>luas awal (m²)</dd><dt>β</dt><dd>koefisien muai luas (/°C), β = 2α</dd></dl>`),
+    T('volume', 'Muai volume', 'book', '', `<div class="bk-shape"><svg viewBox="0 0 300 90" aria-hidden="true"><path d="M60 30l20-14h70l-20 14zM60 30h70v52H60zM130 30l20-14v52l-20 14" fill="color-mix(in srgb,var(--hot) 25%,var(--surface))" stroke="var(--hot)" stroke-dasharray="4 3"/><path d="M66 38l14-10h52l-14 10zM66 38h52v40H66zM118 38l14-10v40l-14 10" fill="var(--surface-2)" stroke="var(--muted)"/><text x="160" y="60" font-size="12" fill="var(--hot)">ΔV</text></svg><span>Terjadi pada benda berbentuk ruang (kubus, bola) dan pada zat cair serta gas.</span></div><div class="bk-main" style="border-radius:12px;padding:8px 12px"><div class="bk-formula">ΔV = V<sub>0</sub> · γ · ΔT</div></div><dl class="bk-dl"><dt>ΔV</dt><dd>pertambahan volume (m³)</dd><dt>V<sub>0</sub></dt><dd>volume awal (m³)</dd><dt>γ</dt><dd>koefisien muai volume (/°C), γ = 3α</dd></dl>`),
+    T('tabel', 'Koefisien muai beberapa bahan', 'chart', '', `<div class="bk-tbl"><table><thead><tr><th>Bahan</th><th>α (× 10⁻⁵ /°C)</th></tr></thead><tbody><tr><td>Aluminium</td><td>2,4</td></tr><tr><td>Kuningan</td><td>1,9</td></tr><tr><td>Tembaga</td><td>1,7</td></tr><tr><td>Baja / besi</td><td>1,2</td></tr><tr><td>Kaca biasa</td><td>0,9</td></tr><tr><td>Kaca pyrex</td><td>0,3</td></tr></tbody></table></div>${box('Ingat!', '<p>Makin besar α, makin mudah bahan memuai. Itulah sebabnya peralatan laboratorium memakai kaca pyrex yang α-nya kecil, sehingga tidak mudah retak saat dipanaskan.</p>', 'tip')}`),
+    T('contoh', 'Contoh soal', 'pen', '', stepper('cs', 'Batang baja panjang 1 m dengan α = 1,2 × 10⁻⁵ /°C dipanaskan dari 20 °C ke 70 °C. Berapa pertambahan panjangnya?', [['Tentukan perubahan suhu', 'ΔT = 70 − 20 = 50 °C'], ['Pilih rumus', 'ΔL = L<sub>0</sub> · α · ΔT'], ['Substitusi nilai', 'ΔL = (1)(1,2 × 10⁻⁵)(50)<br>ΔL = 6 × 10⁻⁴ m']], 'ΔL = 6 × 10⁻⁴ m = 0,6 mm'))
+  ] },
+
+labPage({ name: 'Rel kereta', note: 'Perubahan kecil, dampak besar.' }),
+
+{ id: 'latih', toc: 'Latih dirimu', kick: KICK, h: 'Latih <em>dirimu</em>', lead: 'Kerjakan langkah demi langkah. Jawabanmu langsung diperiksa, dan petunjuk muncul jika belum tepat.', note: 'Latihan hari ini adalah investasi untuk pemahaman yang lebih kuat esok hari.',
+  tiles: [
+    T('terbimbing', 'Latihan terbimbing', 'pen', '', `<p>Pelat aluminium memiliki luas 0,5 m² dan koefisien muai panjang α = 2,4 × 10⁻⁵ /°C. Pelat dipanaskan hingga suhunya naik 100 °C. Tentukan pertambahan luasnya!</p>${num('b1', '1. Koefisien muai luas β = 2α =', '× 10⁻⁵ /°C')}${num('b2', '2. Pertambahan luas ΔA = A₀ · β · ΔT =', '× 10⁻³ m²')}`, { done: () => LS.get('numsent:b2', false) }),
+    T('coba', 'Ayo coba sendiri', 'pen', '', `<p>Kawat tembaga sepanjang 2 m bertambah panjang 3,4 mm ketika suhunya naik 100 °C. Tentukan koefisien muai panjang tembaga!</p><div class="bk-q" style="padding:8px 12px"><b style="color:var(--brand)">Petunjuk</b><div class="bk-formula" style="font-size:19px">α = ${frac('ΔL', 'L<sub>0</sub> · ΔT')}</div></div><textarea class="bk-ta ruled" id="bk-rj1" aria-label="Strategi penyelesaian" placeholder="Strategi penyelesaian saya"></textarea>${num('b3', 'Jawaban saya: α =', '× 10⁻⁵ /°C')}`, { cls: 'tip', done: () => LS.get('numsent:b3', false) })
+  ],
+  init() { const t = bq('#bk-rj1'); t.value = LS.get('bk-rj1', ''); t.oninput = () => LS.set('bk-rj1', t.value) } },
+
+{ id: 'terapkan', toc: 'Pemuaian di sekitar kita', kick: KICK, h: 'Pemuaian <em>di sekitar kita</em>', lead: 'Konsep pemuaian banyak dimanfaatkan dalam teknologi di sekitar kita.', note: 'Fisika hadir dalam solusi nyata.',
+  tiles: [
+    T('lubang', 'Awas miskonsepsi: lubangnya menyusut?', 'warn', '', `<img class="bk-img bk-fill" src="img/p2-lubang.svg" alt="Pelat berlubang sebelum dan sesudah dipanaskan"><p><b>"Lubang pada pelat menyusut saat dipanaskan."</b> Ini keliru. Ketika pelat dipanaskan, seluruh bagian pelat memuai, sehingga lubang di dalamnya juga menjadi lebih besar.</p>${box('Ingat!', '<p>Semua bagian benda memuai ke arah luar.</p>', 'warn')}`, { cls: 'tip' }),
+    T('rel', 'Rel kereta dan jembatan', 'link', '', `<img class="bk-img bk-fill" src="img/p2-rel.svg" alt="Celah pada sambungan rel kereta"><p>Rel kereta diberi celah muai agar tersedia ruang ketika rel memuai akibat kenaikan suhu. Celah ini mencegah rel melengkung atau retak. Sambungan jembatan juga diberi celah serupa.</p>`),
+    T('bimetal', 'Keping bimetal', 'link', '', `<img class="bk-img bk-fill" src="img/p2-bimetal.svg" alt="Keping bimetal melengkung"><p>Keping bimetal terbuat dari dua logam dengan koefisien muai berbeda yang dilekatkan. Saat dipanaskan, logam dengan α lebih besar memuai lebih panjang sehingga keping melengkung ke arah logam yang α-nya lebih kecil. Prinsip ini dipakai pada saklar otomatis setrika, termostat, dan alarm kebakaran.</p>`),
+    T('danau', 'Tahukah kamu?', 'search', '', `<p><b>Mengapa ikan tetap hidup di danau yang permukaannya membeku?</b></p><p>Karena anomali air, air bersuhu 4 °C memiliki massa jenis terbesar sehingga tenggelam ke dasar danau. Air yang lebih dingin naik ke permukaan dan membeku lebih dulu. Lapisan es di permukaan menahan kalor, sehingga air di bawahnya tetap cair dan ikan dapat bertahan hidup.</p>${box('Coba pikirkan', '<p>Mengapa botol kaca berisi air penuh bisa pecah jika disimpan di freezer?</p>', 'tip')}`),
+    videoTile({ tugas: 'Tonton video tentang pemuaian hingga selesai, lalu bandingkan dengan hasil lab virtual <b>Rel kereta</b>. Catat satu contoh pemuaian yang kamu temui di rumah.' })
+  ],
+  init: initVideoTile },
+
+cekPage({ kick: KICK, lead: 'Lima soal tentang pemuaian termal. Jawaban pertamamu dikirim ke guru, tetapi kamu boleh mencoba lagi.', tiles: [
+  T('q1', 'Soal 1', 'check', '', mcq('c1', 1, 'Batang tembaga (α = 1,7 × 10⁻⁵ /°C) sepanjang 2 m dipanaskan hingga suhunya naik 50 °C. Pertambahan panjangnya adalah …', ['0,17 mm', '1,7 mm', '3,4 mm', '17 mm', '0,85 mm']), { done: () => !!LS.get('mcq:c1', null) }),
+  T('q2', 'Soal 2', 'check', '', mcq('c2', 2, 'Jika koefisien muai panjang suatu logam adalah α, koefisien muai volumenya adalah …', ['α', '2α', '3α', 'α/3', 'α²']), { done: () => !!LS.get('mcq:c2', null) }),
+  T('q3', 'Soal 3', 'check', '', mcq('c3', 3, 'Air dipanaskan dari 0 °C sampai 4 °C. Yang terjadi pada volumenya adalah …', ['Bertambah', 'Berkurang', 'Tetap', 'Berkurang lalu bertambah', 'Air berubah menjadi es']), { done: () => !!LS.get('mcq:c3', null) }),
+  T('q4', 'Soal 4', 'pen', '', openQ('c4', 4, 'Sebuah pelat logam berlubang dipanaskan. Jelaskan apa yang terjadi pada lubang di tengahnya.', { type: 'Uraian singkat' }), { done: () => !!LS.get('opensent:c4', null) }),
+  T('q5', 'Soal 5', 'pen', '', openQ('c5', 5, 'Mengapa gelas kaca tebal lebih mudah retak saat dituangi air panas secara mendadak?', { type: 'Uraian' }), { done: () => !!LS.get('opensent:c5', null) })
+] }),
+
+refleksiPage({ kick: KICK, strategi: ['Simulasi batang memuai', 'Rumus dan contoh soal bertahap', 'Latihan dengan umpan balik', 'Lab virtual', 'Contoh dalam kehidupan', 'Video'] })
+];
+
+/* ---------- mesin buku (versi tab) ---------- */
+let cur = 0, open = null;
+function closeSheet() {}
+const stage = bq('#bk-stage');
+const seenTiles = () => LS.get('bagian', []);
+const tabBtn = (p, t, k) => `<button class="bk-tab ${t.cls || ''}" role="tab" id="tab-${p.id}-${t.id}" aria-controls="pane-${p.id}-${t.id}" aria-selected="false" aria-label="Bagian ${k + 1}: ${t.label}" title="${t.label}" tabindex="-1" data-tab="${t.id}"><b>${k + 1}</b><span class="bk-tst" aria-hidden="true"></span></button>`;
+stage.innerHTML = PAGES.map((p, i) => p.cover
+  ? `<article class="bk-page bk-pcover" data-page="${p.id}" hidden>${p.html()}</article>`
+  : `<article class="bk-page bk-tabpage" data-page="${p.id}" hidden>
+      <div class="bk-band"><div><small>Edisi uji coba</small><b>KALOR</b><span>Suhu dan Kalor</span></div><span class="bk-runhead">Buku Saku Fisika XI SMA</span><span class="num">${String(i).padStart(2, '0')}</span></div>
+      <div class="bk-body">${header(p.kick, p.h, p.lead, p.note)}${p.hero ? p.hero() : ''}${p.extra ? p.extra() : ''}
+        <div class="bk-tabrow ${p.tiles.length > 4 ? 'many' : ''}"><span class="bk-tabhint">Halaman ini punya <b>${p.tiles.length} bagian</b>. <br>Ketuk nomor untuk membuka.</span><div class="bk-tabs" role="tablist" aria-label="Bagian halaman ini">${p.tiles.map((t, k) => tabBtn(p, t, k)).join('')}</div></div>
+        <div class="bk-panel">${p.tiles.map((t, k) => `<section class="bk-pane" role="tabpanel" id="pane-${p.id}-${t.id}" aria-labelledby="tab-${p.id}-${t.id}" hidden><h3 class="bk-panetitle ${t.cls || ''}"><span>${k + 1}/${p.tiles.length}</span>${t.label}</h3><div class="bk-src">${t.html}</div>
+          <div class="bk-panenav">${k > 0 ? `<button class="bk-btn alt" data-tabgo="${p.tiles[k - 1].id}">‹ Bagian ${k}</button>` : '<span></span>'}${k < p.tiles.length - 1 ? `<button class="bk-btn" data-tabgo="${p.tiles[k + 1].id}">Bagian ${k + 2} ›</button>` : `<button class="bk-btn" data-nextpage>Halaman berikutnya ›</button>`}</div></section>`).join('')}</div>
+      </div>
+      <div class="bk-foot"><button class="bk-turn" data-prev aria-label="Halaman sebelumnya">‹</button><i>Ilmu Hari Ini untuk Masa Depan yang Lebih Baik</i><button class="bk-turn" data-next aria-label="Halaman berikutnya" ${i === PAGES.length - 1 ? 'disabled' : ''}>›</button></div></article>`).join('');
+const pageEls = bqa('.bk-page');
+PAGES.forEach(p => p.init && p.init());
+bqa('[data-mcq]').forEach(initMcq); bqa('[data-num]').forEach(initNum); bqa('[data-open]').forEach(initOpen); bqa('[data-emoji]').forEach(initEmoji);
+
+function updateScore() {
+  const el = bq('#bk-score'); if (!el) return;
+  const r = ['c1', 'c2', 'c3'].map(k => LS.get('mcq:' + k, null)).filter(Boolean);
+  el.innerHTML = r.length ? `Pilihan ganda: <b>${r.filter(x => x.benar && !x.ulang).length} dari 3</b> benar pada percobaan pertama.` : '';
+}
+updateScore();
+
+function refreshTiles() {
+  const seen = seenTiles();
+  PAGES.forEach((p, i) => {
+    if (!p.tiles) return; const pg = pageEls[i];
+    p.tiles.forEach(t => {
+      const b = bq(`[data-tab="${t.id}"]`, pg), key = p.id + ':' + t.id, opened = seen.includes(key), done = t.done ? t.done() : opened;
+      b.dataset.state = done ? 'done' : opened ? 'seen' : ''; bq('.bk-tst', b).textContent = done ? '✓' : '';
+    });
+  });
+  updateScore();
+}
+
+const moreCue = pn => pn.classList.toggle('more', pn.scrollHeight - pn.clientHeight - pn.scrollTop > 24);
+function selectTab(pid, tid, quiet) {
+  const pi = PAGES.findIndex(p => p.id === pid); if (pi < 0) return;
+  const p = PAGES[pi], t = p.tiles.find(x => x.id === tid) || p.tiles[0], pg = pageEls[pi];
+  stopVideo();
+  bqa('.bk-tab', pg).forEach(b => { const on = b.dataset.tab === t.id; b.setAttribute('aria-selected', on); b.tabIndex = on ? 0 : -1;  });
+  bqa('.bk-pane', pg).forEach(s => s.hidden = s.id !== `pane-${pid}-${t.id}`);
+  const pn = bq('.bk-panel', pg); pn.scrollTop = 0; requestAnimationFrame(() => moreCue(pn));
+  LS.set('tab:' + pid, t.id);
+  if (t.onOpen) t.onOpen();
+  const key = pid + ':' + t.id, seen = seenTiles();
+  if (!seen.includes(key)) { LS.set('bagian', [...seen, key]); if (BK.kode() && !quiet) BK.send('buka_bagian', key, { halaman: pi + 1 }) }
+  refreshTiles();
+}
+const openTile = (pid, tid) => { const pi = PAGES.findIndex(p => p.id === pid); if (pi !== cur) go(pi); selectTab(pid, tid) };
+stage.addEventListener('click', e => {
+  const tb = e.target.closest('[data-tab]'); if (tb) { selectTab(tb.closest('[data-page]').dataset.page, tb.dataset.tab); return }
+  const tg = e.target.closest('[data-tabgo]'); if (tg) { selectTab(tg.closest('[data-page]').dataset.page, tg.dataset.tabgo); bq(`[data-tab="${tg.dataset.tabgo}"]`, tg.closest('[data-page]')).focus({ preventScroll: true }); return }
+  if (e.target.closest('[data-nextpage]') || e.target.closest('[data-next]')) { go(cur + 1, 'next'); return }
+  if (e.target.closest('[data-prev]')) go(cur - 1, 'prev');
+});
+stage.addEventListener('keydown', e => {
+  const tb = e.target.closest('[data-tab]'); if (!tb || !['ArrowLeft', 'ArrowRight'].includes(e.key)) return;
+  e.preventDefault(); e.stopPropagation();
+  const list = bqa('[data-tab]', tb.parentElement), i = list.indexOf(tb), nx = list[(i + (e.key === 'ArrowRight' ? 1 : -1) + list.length) % list.length];
+  selectTab(tb.closest('[data-page]').dataset.page, nx.dataset.tab); nx.focus();
+});
+
+bqa('.bk-panel').forEach(pn => pn.addEventListener('scroll', () => moreCue(pn), { passive: true }));
+addEventListener('resize', () => bqa('.bk-panel').forEach(moreCue));
+/* pindah halaman */
+function go(n, dir, keep) {
+  n = Math.max(0, Math.min(PAGES.length - 1, n));
+  if (n === cur) return;
+  stopVideo();
+  const d = dir || (n > cur ? 'next' : 'prev');
+  pageEls[cur].hidden = true;
+  const el = pageEls[n]; el.hidden = false; el.classList.remove('in-next', 'in-prev'); void el.offsetWidth; el.classList.add('in-' + d);
+  cur = n; LS.set('hal', n); chrome(n, d === 'prev' || keep);
+  window.scrollTo({ top: 0, behavior: 'auto' });
+  if (n > 0 && BK.kode()) BK.send('buka_halaman', PAGES[n].id, { halaman: n + 1 });
+}
+function chrome(n, keep) {
+  const P = PAGES[n];
+  bq('#bk-pg').textContent = `${n + 1} / ${PAGES.length}`;
+  bq('#bk-prog').style.width = ((n + 1) / PAGES.length * 100) + '%';
+  bq('#bk-ttl').textContent = n === 0 ? CONFIG.SUBBAB + ' ' + CONFIG.JUDUL : P.toc;
+  bq('#bk-prev').disabled = n === 0; bq('#bk-next').disabled = n === PAGES.length - 1;
+  bq('#bk-mid').textContent = n < PAGES.length - 1 ? 'Berikutnya: ' + PAGES[n + 1].toc : 'Halaman terakhir';
+  const seen = LS.get('dibuka', []); if (!seen.includes(P.id)) LS.set('dibuka', [...seen, P.id]);
+  renderToc();
+  if (P.tiles) selectTab(P.id, keep ? LS.get('tab:' + P.id, P.tiles[0].id) : P.tiles[0].id, true);
+}
+function renderToc() {
+  const seen = LS.get('dibuka', []);
+  let sn = bq('#bk-subnav'); if (!sn) { sn = document.createElement('nav'); sn.id = 'bk-subnav'; sn.className = 'bk-subnav'; sn.setAttribute('aria-label', 'Subbab'); bq('#bk-toclist').before(sn) }
+  sn.innerHTML = `<b>Subbab</b><div>${SUBBABS.map(s => s.no === CONFIG.SUBBAB ? `<span aria-current="true"><i>${s.no}</i>${s.judul}</span>` : `<a href="${s.file}"><i>${s.no}</i>${s.judul}</a>`).join('')}</div><b>Halaman di subbab ${CONFIG.SUBBAB}</b>`;
+  bq('#bk-toclist').innerHTML = PAGES.map((p, i) => `<button class="it" data-go="${i}" ${i === cur ? 'aria-current="page"' : ''}><b>${String(i + 1).padStart(2, '0')}</b><span>${p.toc}</span><span class="dn">${seen.includes(p.id) && i !== cur ? '✓' : ''}</span></button>`).join('');
+  bqa('#bk-toclist [data-go]').forEach(b => b.onclick = () => { closeToc(); go(+b.dataset.go) });
+}
+const toc = bq('#bk-toc');
+function closeToc() { toc.hidden = true; bq('#bk-menu').focus() }
+bq('#bk-menu').onclick = () => { if (open) closeSheet(); renderToc(); syncNote(); toc.hidden = false; const c = bq('[aria-current="page"]', toc); (c || bq('button', toc)).focus() };
+toc.onclick = e => { if (e.target === toc) closeToc() };
+bq('#bk-prev').onclick = () => go(cur - 1, 'prev');
+bq('#bk-next').onclick = () => go(cur + 1, 'next');
+addEventListener('keydown', e => {
+  if (e.key === 'Escape') { if (open) { closeSheet(); return } if (!toc.hidden) { closeToc(); return } }
+  if (open || e.target.closest('input,textarea,select,[contenteditable]')) return;
+  if (e.key === 'ArrowRight') go(cur + 1, 'next'); if (e.key === 'ArrowLeft') go(cur - 1, 'prev');
+});
+let tx = null, ty = 0;
+stage.addEventListener('touchstart', e => { if (e.target.closest('input,textarea,select,.bk-tabs,.bench,canvas,.tw,.bk-tbl,.bk-turn')) { tx = null; return } tx = e.touches[0].clientX; ty = e.touches[0].clientY }, { passive: true });
+stage.addEventListener('touchend', e => { if (tx == null) return; const dx = e.changedTouches[0].clientX - tx, dy = e.changedTouches[0].clientY - ty; tx = null; if (Math.abs(dx) > 70 && Math.abs(dx) > Math.abs(dy) * 1.6) dx < 0 ? go(cur + 1, 'next') : go(cur - 1, 'prev') }, { passive: true });
+
+/* lab: pindahkan tiap langkah ke kotaknya (dipanggil setelah skrip lab berjalan) */
+BK.labTiles = () => {
+  const steps = bqa('#panel > section.step');
+  steps.forEach((s, i) => { const slot = bq(`[data-labstep="${i}"]`); if (slot) slot.appendChild(s) });
+  const hd = bq('#panel > .head'); if (hd) hd.remove();
+};
+
+pageEls.forEach(p => p.hidden = true); cur = 0; pageEls[0].hidden = false; chrome(0); refreshTiles();
+const startPage = BK.kode() ? LS.get('hal', 0) : 0;
+if (startPage > 0) go(startPage, 'next', true);
+syncNote(); BK.flush();
+
+</script>
+<script>
+const LABID='1-2';
+(function(){
+const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelectorAll(s)];
+const nf=(v,d=1)=>Number(v).toLocaleString('id-ID',{minimumFractionDigits:d,maximumFractionDigits:d});
+const sig=v=>{if(v===0)return'0';const a=Math.abs(v);const d=a>=100?0:a>=10?1:a>=1?2:a>=.1?3:a>=.01?4:5;return Number(v).toLocaleString('id-ID',{maximumFractionDigits:d})};
+const store={get(k,d){try{const v=localStorage.getItem('labkalor:'+k);return v==null?d:JSON.parse(v)}catch(e){return d}},set(k,v){try{localStorage.setItem('labkalor:'+k,JSON.stringify(v))}catch(e){}}};
+const still=matchMedia('(prefers-reduced-motion: reduce)').matches;
+const css=n=>getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
+
+/* ---------- grafik ---------- */
+function niceStep(range,n){const r=range/n||1,p=Math.pow(10,Math.floor(Math.log10(r))),f=r/p;return(f<1.5?1:f<3.5?2:f<7.5?5:10)*p}
+function chart(el,o){
+  const W=520,H=270,l=54,r=14,t=12,b=42;
+  const xs=niceStep(o.xmax-o.xmin,5),ys=niceStep(o.ymax-o.ymin,5);
+  const X=v=>l+(v-o.xmin)/(o.xmax-o.xmin)*(W-l-r),Y=v=>H-b-(v-o.ymin)/(o.ymax-o.ymin)*(H-t-b);
+  let g='';
+  for(let v=Math.ceil(o.xmin/xs-1e-9)*xs;v<=o.xmax+xs*1e-6;v+=xs){v=+v.toPrecision(10);g+=`<line class="grid" x1="${X(v)}" x2="${X(v)}" y1="${t}" y2="${H-b}"/><text class="tick" x="${X(v)}" y="${H-b+15}" text-anchor="middle">${sig(v)}</text>`}
+  for(let v=Math.ceil(o.ymin/ys-1e-9)*ys;v<=o.ymax+ys*1e-6;v+=ys){v=+v.toPrecision(10);g+=`<line class="grid" x1="${l}" x2="${W-r}" y1="${Y(v)}" y2="${Y(v)}"/><text class="tick" x="${l-7}" y="${Y(v)+4}" text-anchor="end">${sig(v)}</text>`}
+  g+=`<line class="axis" x1="${l}" x2="${W-r}" y1="${Y(Math.max(o.ymin,0))}" y2="${Y(Math.max(o.ymin,0))}"/><line class="axis" x1="${X(Math.max(o.xmin,0))}" x2="${X(Math.max(o.xmin,0))}" y1="${t}" y2="${H-b}"/>`;
+  for(const s of o.series){
+    if(s.line&&s.pts.length>1)g+=`<polyline class="ln ${s.cls||''}" points="${s.pts.map(p=>X(p[0]).toFixed(1)+','+Y(p[1]).toFixed(1)).join(' ')}"/>`;
+    if(s.dots)for(const p of s.pts)g+=`<circle class="dot" cx="${X(p[0])}" cy="${Y(p[1])}" r="5"/>`;
+  }
+  g+=`<text class="axl" x="${(l+W-r)/2}" y="${H-6}" text-anchor="middle">${o.xl}</text><text class="axl" transform="translate(13 ${(t+H-b)/2}) rotate(-90)" text-anchor="middle">${o.yl}</text>`;
+  el.setAttribute('viewBox',`0 0 ${W} ${H}`);el.innerHTML=g;
+}
+const span=(a,pad)=>{let lo=Math.min(0,...a),hi=Math.max(0,...a);if(hi===lo)hi=lo+1;return[lo<0?lo*pad:0,hi>0?hi*pad:0]};
+const flame=(x,h)=>h>0?`<path class="f-hot" d="M${x-11} 128Q${x-8} ${128-h*.6} ${x} ${128-h}Q${x+8} ${128-h*.6} ${x+11} 128Z"/>`:'';
+
+/* ---------- data bahan (nilai buku saku bila tersedia) ---------- */
+const ALPHA={'Baja (rel kereta)':1.2e-5,'Aluminium (kusen jendela)':2.4e-5,'Tembaga (pipa AC)':1.7e-5,'Kuningan (keran air)':1.9e-5};
+const CJ={'Air':4200,'Minyak goreng':2000,'Pasir pantai':800,'Aluminium':900,'Besi':450};
+const CJF={'Air':'f-cold','Minyak goreng':'f-oil','Pasir pantai':'f-sand','Aluminium':'f-metal','Besi':'f-metal'};
+const API={'Kecil (500 W)':500,'Sedang (1.000 W)':1000,'Besar (1.500 W)':1500};
+const APIH={500:14,1000:22,1500:30};
+const HOT={'Air panas dari termos':4200,'Sendok aluminium panas':900,'Paku besi panas':450,'Kawat tembaga panas':390,'Sendok misterius (Logam X)':520};
+const X_C=520;
+const TARGET={'Tanpa target':null,'Air mandi bayi (37–40 °C)':[37,40],'Teh siap minum (55–60 °C)':[55,60]};
+const LOC={'Tepi pantai (didih 100 °C)':100,'Dieng, ±2.000 m (didih ±93 °C)':93,'Puncak Semeru, ±3.676 m (didih ±88 °C)':88};
+const KOND={'Tembaga (panci tembaga)':400,'Aluminium (panci)':240,'Besi (sendok, pagar)':80,'Kaca (gelas)':0.8,'Plastik (gagang panci)':0.2,'Kayu (spatula)':0.15};
+const short=s=>s.split(' (')[0];
+
+function bodyNote(t){if(t<0)return'di bawah titik beku air';if(t==0)return'es mencair';if(t<20)return'sejuk sampai dingin';if(t<30)return'suhu ruang';if(t<36.5)return'hangat';if(t<=37.5)return'suhu tubuh normal';if(t<38)return'agak hangat';if(t<=42)return'demam (≥ 38 °C)';if(t<100)return'panas, jangan disentuh';if(t==100)return'air mendidih (1 atm)';return'di atas titik didih air'}
+
+/* ---------- definisi percobaan ---------- */
+const LABS=[
+{id:'1-1',no:'1.1',name:'Demam atau tidak?',title:'Tangan, termometer, dan empat skala',pages:'hlm. 01–10',note:'Suhu dapat diukur, bukan hanya dirasakan.',
+ phen:{tag:'Fenomena',story:'Badan adik terasa panas. Ibu menempelkan punggung tangan ke dahinya, tetapi tangan ibu baru saja memegang gelas es teh. Apakah tangan ibu bisa dipercaya? Lalu, kalau termometer menunjukkan 38,5 °C, berapa angkanya pada termometer buatan Amerika yang memakai °F?',q:'Mengapa tangan bisa merasakan panas atau dingin, tetapi untuk mengetahui suhunya secara pasti kita membutuhkan termometer?',
+  demo:`<div class="demo"><b>Coba dulu: tangan sebagai termometer</b><svg viewBox="0 0 520 150" role="img" aria-label="Tiga baskom air dan dua tangan">${[['f-hot','Air panas','45 °C',90],['f-suam','Air suam','30 °C',260],['f-cold','Air dingin','10 °C',430]].map(b=>`<path class="${b[0]}" d="M${b[3]-62} 78h124l-14 44a10 10 0 0 1-10 7h-76a10 10 0 0 1-10-7z" opacity=".85"/><text class="lbl" x="${b[3]}" y="146" text-anchor="middle">${b[1]} · ${b[2]}</text>`).join('')}<g class="hand" id="hl"><ellipse class="f-skin" cx="0" cy="0" rx="22" ry="15"/><text class="lbl" x="0" y="5" text-anchor="middle">kiri</text></g><g class="hand" id="hr"><ellipse class="f-skin" cx="0" cy="0" rx="22" ry="15"/><text class="lbl" x="0" y="5" text-anchor="middle">kanan</text></g></svg>
+  <div class="row"><button class="btn" id="d1">Rendam: kiri di air panas, kanan di air dingin</button><button class="btn" id="d2" disabled>Pindahkan kedua tangan ke air suam</button><button class="btn alt" id="d0">Ulangi</button></div><p class="fb" id="dm">Ikuti dua tombol di atas, lalu perhatikan apa yang dirasakan masing-masing tangan.</p></div>`,
+  init(){const pos={0:[[200,30],[320,30]],1:[[90,70],[430,70]],2:[[235,70],[285,70]]};const set=k=>{['hl','hr'].forEach((h,i)=>$('#'+h).style.transform=`translate(${pos[k][i][0]}px,${pos[k][i][1]}px)`);$('#d2').disabled=k!=1;$('#d1').disabled=k!=0};
+   const msg=['Ikuti dua tombol di atas, lalu perhatikan apa yang dirasakan masing-masing tangan.','Satu menit berlalu. Kulit tangan kiri menyesuaikan diri dengan air panas, kulit tangan kanan dengan air dingin.','<b>Tangan kiri terasa dingin, tangan kanan terasa hangat.</b> Padahal termometer di baskom tengah menunjukkan 30 °C untuk keduanya. Yang dirasakan kulit adalah arah perpindahan kalor, bukan nilai suhunya.'];
+   const go=k=>{set(k);$('#dm').innerHTML=msg[k]};$('#d1').onclick=()=>go(1);$('#d2').onclick=()=>go(2);$('#d0').onclick=()=>go(0);go(0)}},
+ ask:'Bagaimana hubungan pembacaan skala Fahrenheit dengan skala Celsius untuk suhu yang sama?',
+ predict:{q:'Suhu badan adik naik dari 37 °C menjadi 39 °C, jadi naik 2 °C. Pada termometer °F, kenaikannya…',opts:['2 °F','3,6 °F','35,6 °F'],why:'Naik 3,6 °F. Angka 32 hanya menggeser titik nol, jadi tidak ikut memengaruhi besar perubahan suhu. Yang berperan hanya faktor 9/5.'},
+ vars:[['Suhu dalam °C yang kamu atur','bebas'],['Pembacaan dalam °F','terikat'],['Benda dan keadaan yang diukur','kontrol']],
+ presets:[['Es mencair',{t:0}],['Ruangan ber-AC',{t:24}],['Siang di Jakarta',{t:33}],['Suhu tubuh normal',{t:37}],['Adik demam',{t:38.5}],['Air mendidih',{t:100}],['Puncak Everest',{t:-36}]],
+ controls:[{k:'t',label:'Suhu',min:-50,max:150,step:.5,unit:'°C',d:1}],init:{t:38.5},
+ scene:`<svg viewBox="0 0 520 215" role="img" aria-label="Empat termometer"><line class="s-dash" x1="40" x2="500" y1="57.5" y2="57.5"/><line class="s-dash" x1="40" x2="500" y1="132.5" y2="132.5"/><text class="cap" x="2" y="54">didih</text><text class="cap" x="2" y="129">beku</text>${['°C','°R','°F','K'].map((u,i)=>{const x=95+i*115;return`<rect class="f-sur" x="${x-9}" y="16" width="18" height="158" rx="9"/><rect class="f-hot" id="tb${i}" x="${x-5}" y="100" width="10" height="70" rx="5"/><circle class="f-hot" cx="${x}" cy="180" r="13"/><text class="big" id="tv${i}" x="${x}" y="212" text-anchor="middle">0</text><text class="cap" x="${x+16}" y="28">${u}</text>`}).join('')}</svg>
+ <canvas id="pc" width="520" height="130" aria-label="Animasi gerak partikel"></canvas><p class="hint">Kotak di atas menggambarkan partikel benda. Makin tinggi suhu, makin besar energi kinetik rata-ratanya, makin cepat geraknya.</p>`,
+ update(s){const R=s.t*4/5,F=s.t*9/5+32,K=s.t+273;const y=170-(s.t+50)/200*150;[s.t,R,F,K].forEach((v,i)=>{const b=$('#tb'+i);b.setAttribute('y',y);b.setAttribute('height',176-y);$('#tv'+i).textContent=nf(v,i==3?0:1)});s.o=[s.t,R,F,K];
+  return[['Reamur',nf(R)+' °R'],['Fahrenheit',nf(F)+' °F'],['Kelvin',nf(K,0)+' K'],['Keterangan',bodyNote(s.t)]]},
+ tick(s,dt){const c=$('#pc');if(!c)return;const g=c.getContext('2d');s.p=s.p||Array.from({length:16},(_,i)=>({x:30+(i*83)%460,y:20+(i*47)%90,a:i*2.4}));const v=still?0:Math.sqrt((s.t+273)/273)*((s.t+273)/3.2);g.clearRect(0,0,520,130);g.strokeStyle=css('--line');g.lineWidth=2;g.strokeRect(1,1,518,128);g.fillStyle=s.t>=30?css('--hot'):css('--cold');for(const p of s.p){p.x+=Math.cos(p.a)*v*dt;p.y+=Math.sin(p.a)*v*dt;if(p.x<10||p.x>510){p.a=Math.PI-p.a;p.x=clamp(p.x,10,510)}if(p.y<10||p.y>120){p.a=-p.a;p.y=clamp(p.y,10,120)}g.beginPath();g.arc(p.x,p.y,7,0,7);g.fill()}},
+ cols:['t (°C)','t (°R)','t (°F)','T (K)'],row:s=>s.o.map((v,i)=>nf(v,i==3?0:1)),num:s=>s.o,plot:{x:0,y:2,xl:'Suhu (°C)',yl:'Suhu (°F)'},
+ proc:{q:'Dina ingin mencari suhu saat angka Celsius sama dengan angka Fahrenheit. Ia mencoba tiga suhu secara acak, tidak menemukan, lalu menyimpulkan "tidak ada". Apa perbaikan prosedurnya?',opts:['Mencoba lebih banyak suhu acak sampai kebetulan ketemu','Menggeser suhu secara teratur sambil mengamati selisih °F − °C, lalu bergerak ke arah selisih yang mengecil','Mengganti termometer dengan jenis lain'],ans:1,why:'Pengamatan yang sistematis menunjukkan arah. Selisih °F − °C mengecil saat suhu turun dan menjadi nol di −40.'},
+ qs:['Dari grafik °F terhadap °C, berapa kemiringan garisnya dan di mana garis memotong sumbu °F? Hubungkan dengan rumus di halaman 05.','Temanmu di New York menulis: "Hari ini 86 °F." Lebih panas atau lebih dingin dibanding siang di Jakarta (33 °C)? Buktikan dengan simulasi.','Pada suhu berapa angka Celsius dan Fahrenheit sama? Jelaskan cara kamu menemukannya.'],
+ apply:['Mengapa dokter memakai termometer, bukan telapak tangan, untuk memastikan pasien demam? Gunakan hasil percobaan tiga baskom di langkah 1.','Aplikasi cuaca di ponsel bisa menampilkan °C, °F, dan K. Sebutkan satu situasi sehari-hari ketika kamu perlu mengonversi suhu.']},
+
+{id:'1-2',no:'1.2',name:'Rel kereta',title:'Celah di sambungan rel kereta',pages:'hlm. 11–12',note:'Perubahan kecil, dampak besar.',
+ phen:{tag:'Fenomena',story:'Pagi hari rel kereta masih sejuk. Menjelang siang, matahari memanaskan baja rel sampai sekitar 60 °C. Karena itu di setiap sambungan rel selalu ada celah kecil. Jika celahnya terlalu sempit, rel yang memanjang akan saling mendorong lalu melengkung, dan itu berbahaya bagi kereta.',q:'Berapa lebar celah yang cukup supaya rel tetap aman di siang paling terik?'},
+ ask:'Bagaimana pengaruh kenaikan suhu terhadap pertambahan panjang rel?',
+ predict:{q:'Siang ini lebih terik dari biasanya, sehingga kenaikan suhu rel dua kali lebih besar. Pertambahan panjang rel menjadi…',opts:['tetap','dua kali','empat kali'],why:'Dua kali. ΔL = L₀·α·ΔT, sehingga ΔL sebanding dengan ΔT. Titik-titik datamu seharusnya membentuk garis lurus yang melalui titik nol.'},
+ vars:[['Kenaikan suhu rel ΔT','bebas'],['Pertambahan panjang ΔL','terikat'],['Bahan rel','kontrol'],['Panjang satu batang rel L₀','kontrol']],
+ presets:[['Rel kereta 12 m, siang 60 °C',{b:'Baja (rel kereta)',L:12,T0:25,T:60,g:6}],['Contoh buku: baja 1 m, 20 → 70 °C',{b:'Baja (rel kereta)',L:1,T0:20,T:70,g:1}],['Pipa tembaga AC 3 m',{b:'Tembaga (pipa AC)',L:3,T0:25,T:50,g:2}]],
+ controls:[{k:'b',label:'Bahan',opts:Object.keys(ALPHA)},{k:'L',label:'Panjang satu batang L₀',min:1,max:25,step:1,unit:'m'},{k:'T0',label:'Suhu saat dipasang',min:15,max:35,step:1,unit:'°C'},{k:'T',label:'Suhu siang terik',min:15,max:80,step:1,unit:'°C'},{k:'g',label:'Lebar celah sambungan',min:0,max:15,step:.5,unit:'mm',d:1}],init:{b:'Baja (rel kereta)',L:12,T0:25,T:60,g:6},
+ scene:`<svg viewBox="0 0 520 160" role="img" aria-label="Dua batang rel dengan celah sambungan"><rect class="f-sand" x="0" y="112" width="520" height="22" opacity=".55"/>${[30,90,150,210,290,350,410,470].map(x=>`<rect class="f-mut" x="${x-14}" y="100" width="28" height="14" rx="2" opacity=".55"/>`).join('')}
+ <rect class="f-metal" id="r1" x="0" y="82" width="250" height="18" rx="2"/><rect class="f-hot" id="r1h" x="0" y="82" width="250" height="18" rx="2"/><rect class="f-metal" id="r2" x="270" y="82" width="250" height="18" rx="2"/><rect class="f-hot" id="r2h" x="270" y="82" width="250" height="18" rx="2"/>
+ <path class="s-hot" id="bk" d="M200 82Q260 40 320 82" visibility="hidden"/><line class="s-dash" x1="260" x2="260" y1="60" y2="108"/><text class="lbl" id="gl" x="260" y="52" text-anchor="middle">celah</text><text class="cap" x="6" y="154">Celah dan pemuaian digambar diperbesar agar terlihat.</text><text class="cap" id="rt" x="6" y="20"></text></svg>`,
+ update(s){const dT=s.T-s.T0,dL=s.L*ALPHA[s.b]*dT*1000,S=6,rest=s.g-dL,bent=rest<0;
+  const half=bent?0:rest*S/2;$('#r1').setAttribute('width',260-half);$('#r1h').setAttribute('width',260-half);$('#r2').setAttribute('x',260+half);$('#r2h').setAttribute('x',260+half);$('#r2').setAttribute('width',260-half);$('#r2h').setAttribute('width',260-half);
+  const op=clamp(dT/60,0,.8);$('#r1h').style.opacity=op;$('#r2h').style.opacity=op;$('#bk').setAttribute('visibility',bent?'visible':'hidden');$('#bk').setAttribute('d',`M190 82Q260 ${82-clamp(-rest*8,12,55)} 330 82`);
+  $('#gl').textContent=bent?'Rel melengkung!':'celah tersisa '+nf(rest,1)+' mm';$('#rt').textContent=`${short(s.b)} · α = ${nf(ALPHA[s.b]*1e5)} × 10⁻⁵ /°C · suhu rel ${s.T} °C`;
+  s.o=[dT,dL,bent];
+  return[['ΔT',dT+' °C'],['ΔL satu batang',nf(dL,2)+' mm'],['Celah tersisa',bent?'habis':nf(rest,2)+' mm'],['Status',bent?'Melengkung':'Aman',bent?'warn':'good']]},
+ cols:['Bahan','L₀ (m)','ΔT (°C)','ΔL (mm)','Celah (mm)','Status'],row:s=>[short(s.b),s.L,s.o[0],nf(s.o[1],2),nf(s.g),s.o[2]?'melengkung':'aman'],num:s=>[0,s.L,s.o[0],s.o[1]],plot:{x:2,y:3,xl:'ΔT (°C)',yl:'ΔL (mm)'},
+ proc:{q:'Bimo ingin tahu bahan mana yang paling mudah memuai. Ia memanaskan rel baja 12 m sampai 50 °C dan kusen aluminium 2 m sampai 70 °C, lalu membandingkan ΔL-nya. Apa kelemahan prosedur ini?',opts:['Tidak ada, karena keduanya sama-sama dipanaskan','Panjang awal dan kenaikan suhu ikut berbeda, sehingga perbedaan ΔL tidak bisa dipastikan berasal dari jenis bahan','Seharusnya ia memakai tiga bahan'],ans:1,why:'Hanya satu variabel yang boleh diubah. Panjang awal dan ΔT harus dibuat sama agar pengaruh jenis bahan terlihat.'},
+ qs:['Bagaimana bentuk grafik ΔL terhadap ΔT dari datamu? Apa artinya?','Tantangan desain: rel baja 25 m dipasang pada 25 °C dan bisa mencapai 65 °C. Berapa celah minimal supaya aman? Temukan dengan simulasi, lalu buktikan dengan rumus.','Ganti variabel bebasnya menjadi bahan. Variabel apa saja yang harus dijaga tetap? Bahan mana yang paling banyak memuai?'],
+ apply:['Kabel listrik di antara tiang dipasang agak kendur, bukan tegang. Jelaskan alasannya dengan konsep pemuaian.','Tutup logam botol selai yang macet bisa dibuka setelah disiram air panas. Mengapa?']},
+
+{id:'1-3',no:'1.3',name:'Pasir pantai',title:'Mengapa pasir lebih cepat panas daripada air?',pages:'hlm. 13–14',timed:40,note:'Kalor jenis besar, suhu sulit berubah.',
+ phen:{tag:'Fenomena',story:'Siang hari di pantai, pasir terasa membakar telapak kaki, padahal air laut masih terasa sejuk. Keduanya dipanaskan matahari yang sama selama waktu yang sama. Di dapur juga begitu: minyak di wajan lebih cepat panas daripada air di panci, meskipun apinya sama.',q:'Apa yang membuat dua zat yang menerima kalor sama mengalami kenaikan suhu yang berbeda?'},
+ ask:'Untuk kalor yang sama, bagaimana pengaruh jenis zat terhadap kenaikan suhunya?',
+ predict:{q:'1 kg pasir dan 1 kg air dipanaskan di atas api yang sama selama waktu yang sama. Mana yang suhunya naik lebih banyak?',opts:['Air','Pasir','Sama saja'],why:'Pasir. Kalor jenis pasir (sekitar 800 J/kg°C) jauh lebih kecil daripada air (4.200 J/kg°C), jadi untuk kalor yang sama kenaikan suhunya lebih besar.'},
+ vars:[['Jenis zat (kalor jenis c)','bebas'],['Kenaikan suhu ΔT','terikat'],['Massa zat','kontrol'],['Besar api dan lama pemanasan (kalor Q)','kontrol']],
+ presets:[['Pasir 1 kg',{z:'Pasir pantai',m:1,api:'Sedang (1.000 W)'}],['Air 1 kg',{z:'Air',m:1,api:'Sedang (1.000 W)'}],['Minyak goreng 1 kg',{z:'Minyak goreng',m:1,api:'Sedang (1.000 W)'}],['Contoh buku: 2 kg air',{z:'Air',m:2,api:'Besar (1.500 W)'}]],
+ controls:[{k:'z',label:'Zat di dalam panci',opts:Object.keys(CJ)},{k:'m',label:'Massa',min:.2,max:2,step:.1,unit:'kg',d:1},{k:'api',label:'Besar api kompor (kalor diserap per detik)',opts:Object.keys(API)}],init:{z:'Pasir pantai',m:1,api:'Sedang (1.000 W)'},
+ scene:`<svg viewBox="0 0 520 150" role="img" aria-label="Panci di atas kompor"><rect class="f-mut" x="140" y="128" width="240" height="10" rx="3"/><g id="fl"></g><path class="s-ink" d="M164 46v62a12 12 0 0 0 12 12h168a12 12 0 0 0 12-12V46M356 56h40M124 56h40"/><rect id="hz0" x="168" y="66" width="184" height="50" rx="8"/><rect class="f-hot" id="hz" x="168" y="66" width="184" height="50" rx="8"/><text class="big" id="hT" x="410" y="90">20 °C</text><text class="cap" id="hs" x="410" y="110">kompor mati</text><text class="lbl" id="hn" x="10" y="90"></text></svg><svg id="live" role="img" aria-label="Grafik suhu terhadap waktu"></svg><p class="hint">Garis putus-putus adalah percobaan sebelumnya, untuk dibandingkan. Percobaan berhenti di 100 °C.</p>`,
+ P:s=>API[s.api],
+ reset(s){if(s.h&&s.h.length>5)s.ghost=s.h;s.t=0;s.Tc=20;s.run=false;s.h=[[0,20]]},
+ step(s,dt){const P=this.P(s);s.t+=dt;s.Tc=20+P*s.t/(s.m*CJ[s.z]);if(s.Tc>=100){s.Tc=100;s.t=s.m*CJ[s.z]*80/P;s.run=false}s.h.push([s.t,s.Tc])},
+ update(s){const P=this.P(s),Q=P*s.t;$('#hz0').setAttribute('class',CJF[s.z]);$('#hz').style.opacity=(s.Tc-20)/80*.85;$('#hT').textContent=nf(s.Tc)+' °C';$('#hs').textContent=s.run?'kompor menyala':'kompor mati';$('#fl').innerHTML=s.run?[205,260,315].map(x=>flame(x,APIH[P])).join(''):'';$('#hn').textContent=nf(s.m)+' kg '+s.z.toLowerCase();
+  const xm=Math.max(s.m*CJ[s.z]*80/P,s.ghost?s.ghost[s.ghost.length-1][0]:0);
+  chart($('#live'),{xmin:0,xmax:xm,ymin:0,ymax:100,xl:'Waktu (s)',yl:'Suhu (°C)',series:[...(s.ghost?[{pts:s.ghost,line:1,cls:'ghost'}]:[]),{pts:s.h,line:1}]});s.o=[s.t,Q/1000,s.Tc];
+  return[['Waktu',nf(s.t,0)+' s'],['Kalor Q = P·t',nf(Q/1000)+' kJ'],['Suhu',nf(s.Tc)+' °C'],['ΔT',nf(s.Tc-20)+' °C']]},
+ cols:['Zat','m (kg)','t (s)','Q (kJ)','T (°C)'],row:s=>[s.z,nf(s.m),nf(s.o[0],0),nf(s.o[1]),nf(s.o[2])],
+ proc:{q:'Sari membandingkan air dan pasir. Ia mencatat suhu air setelah 60 s dan suhu pasir setelah 120 s, lalu menyimpulkan pasir lebih mudah panas. Apa yang perlu diperbaiki?',opts:['Suhu harus dicatat pada waktu yang sama (dengan api yang sama) supaya kalor yang diterima kedua zat sama','Pasir harus dipanaskan lebih lama lagi','Massa air harus lebih besar daripada massa pasir'],ans:0,why:'Dengan api yang sama, lama pemanasan menentukan kalor yang diberikan (Q = P·t). Waktu yang berbeda berarti kalornya berbeda, jadi perbandingannya tidak adil.'},
+ qs:['Jeda kompor pada waktu yang sama untuk air dan pasir, lalu catat. Zat mana yang ΔT-nya lebih besar? Jelaskan dengan Q = m·c·ΔT.','Hitung kalor jenis salah satu zat dari datamu sendiri (c = Q / (m·ΔT)). Cocokkah dengan nilai di buku saku?','Buku saku menghitung 504 kJ untuk memanaskan 2 kg air dari 20 °C ke 80 °C. Dengan api besar (1.500 W), berapa lama waktunya? Buktikan dengan percobaan.'],
+ apply:['Mengapa air dipakai sebagai cairan pendingin di radiator mobil?','Mengapa suhu daerah pantai lebih stabil, tidak terlalu panas di siang hari dan tidak terlalu dingin di malam hari, dibanding daerah yang jauh dari laut?']},
+
+{id:'1-4',no:'1.4',name:'Air mandi hangat',title:'Mencampur air panas dan air keran',pages:'hlm. 15–16',note:'Kalor mengalir sampai suhunya sama.',
+ phen:{tag:'Fenomena',story:'Pagi hari ibu menyiapkan air mandi hangat untuk adik. Air panas dari termos dicampur dengan air keran di ember. Ibu hanya mengira-ngira, tanpa termometer. Kadang airnya terlalu panas, kadang masih dingin.',q:'Berapa banyak air panas yang dibutuhkan supaya air mandinya pas hangat, sekitar 37–40 °C?'},
+ ask:'Bagaimana pengaruh massa air panas terhadap suhu akhir campuran?',
+ predict:{q:'Ibu mencampur 1 L air termos 95 °C dengan 1 L air keran 27 °C. Suhu akhirnya…',opts:['tepat di tengah, 61 °C','lebih dekat ke 27 °C','lebih dekat ke 95 °C'],why:'Tepat di tengah, 61 °C, karena massa dan jenis zatnya sama. Bila massa air keran lebih besar, suhu akhir bergeser mendekati suhu air keran.'},
+ vars:[['Massa air panas m₁','bebas'],['Suhu akhir campuran T','terikat'],['Suhu awal air panas dan air keran','kontrol'],['Massa air keran m₂','kontrol']],
+ presets:[['Air mandi: 1 L termos + 3 L keran',{z:'Air panas dari termos',m1:1000,T1:95,m2:3000,T2:27,g:'Air mandi bayi (37–40 °C)'}],['Contoh buku: 200 g + 300 g air',{z:'Air panas dari termos',m1:200,T1:90,m2:300,T2:20,g:'Tanpa target'}],['Sendok misterius dalam air',{z:'Sendok misterius (Logam X)',m1:100,T1:100,m2:200,T2:25,g:'Tanpa target'}]],
+ controls:[{k:'g',label:'Target suhu',opts:Object.keys(TARGET)},{k:'z',label:'Benda panas',opts:Object.keys(HOT)},{k:'m1',label:'Massa benda panas m₁',min:10,max:3000,step:10,unit:'g'},{k:'T1',label:'Suhu awal benda panas T₁',min:40,max:100,step:1,unit:'°C'},{k:'m2',label:'Massa air keran m₂',min:100,max:5000,step:50,unit:'g'},{k:'T2',label:'Suhu air keran T₂',min:0,max:35,step:1,unit:'°C'}],init:{g:'Air mandi bayi (37–40 °C)',z:'Air panas dari termos',m1:1000,T1:95,m2:3000,T2:27},
+ scene:`<svg viewBox="0 0 520 215" role="img" aria-label="Ember berisi campuran dengan dua termometer"><path class="s-ink" d="M118 22l18 168a10 10 0 0 0 10 9h228a10 10 0 0 0 10-9l18-168"/><path class="s-ink" d="M110 22h300" stroke-width="4"/>${[0,1].map(i=>{const x=210+i*100;return`<rect class="f-sur" x="${x-11}" y="30" width="22" height="140" rx="6"/><rect class="${i?'f-cold':'f-hot'}" id="kb${i}" x="${x-11}" y="100" width="22" height="70" rx="6"/><text class="big" id="kv${i}" x="${x}" y="18" text-anchor="middle">0</text><text class="cap" id="kl${i}" x="${x}" y="186" text-anchor="middle">${i?'air keran':'benda panas'}</text>`}).join('')}<text class="cap" x="430" y="110">ember</text><text class="cap" x="430" y="124">(anggap tidak ada</text><text class="cap" x="430" y="138">kalor yang hilang)</text></svg>
+ <div class="row"><button class="btn" id="mix">Campurkan</button><span class="hint" id="mixmsg">Atur massa dan suhu, lalu campurkan.</span></div>
+ <div class="row" id="xrow" hidden><label for="xc">Kalor jenis Logam X menurut hitunganmu (J/kg°C)</label><input type="number" id="xc" style="width:110px"><button class="btn alt" id="xck">Periksa</button><span id="xfb"></span></div>`,
+ reset(s){s.p=0;s.mixing=false},
+ tick(s,dt){if(s.mixing){s.p=Math.min(1,s.p+(still?1:dt/2.5));if(s.p>=1)s.mixing=false;refresh()}},
+ update(s){const c1=HOT[s.z],X=s.z.includes('Logam X'),Tf=(s.m1*c1*s.T1+s.m2*4200*s.T2)/(s.m1*c1+s.m2*4200);const e=s.p>=1?0:Math.exp(-5*s.p),a=s.T1+(Tf-s.T1)*(1-e),b=s.T2+(Tf-s.T2)*(1-e);[a,b].forEach((v,i)=>{const h=v/100*140;$('#kb'+i).setAttribute('y',170-h);$('#kb'+i).setAttribute('height',Math.max(h,2));$('#kv'+i).textContent=nf(v)+' °C'});
+  $('#kl0').textContent=short(s.z).replace(' panas','').replace(' dari termos','').toLowerCase();
+  $('#xrow').hidden=!X;$('#mixmsg').textContent=s.p>=1?'Setimbang termal tercapai. Catat datanya.':s.mixing?'Kalor berpindah dari benda panas ke air keran…':'Atur massa dan suhu, lalu campurkan.';s.done=s.p>=1;s.o=[Tf];
+  const tg=TARGET[s.g];let st=null;if(tg&&s.done)st=Tf<tg[0]?['Target','Terlalu dingin','warn']:Tf>tg[1]?['Target','Terlalu panas','warn']:['Target','Pas!','good'];
+  const Qt=s.m2/1000*4200*(Tf-s.T2);const r=s.done?[['Suhu akhir T',nf(Tf)+' °C'],['Q diterima air keran',nf(Qt,0)+' J'],['Q dilepas benda panas',X?'hitung sendiri':nf(s.m1/1000*c1*(s.T1-Tf),0)+' J']]:[['Suhu akhir T','—'],['Q diterima air keran','—'],['Q dilepas benda panas','—']];
+  if(tg)r.push(st||['Target',tg[0]+'–'+tg[1]+' °C']);return r},
+ canRec:s=>s.done,recMsg:'Campurkan dulu sampai setimbang.',
+ cols:['Benda panas','m₁ (g)','T₁ (°C)','m₂ (g)','T₂ (°C)','T akhir (°C)'],row:s=>[short(s.z),s.m1,s.T1,s.m2,s.T2,nf(s.o[0])],num:s=>[0,s.m1,s.T1,s.m2,s.T2,s.o[0]],plot:{x:1,y:5,xl:'Massa benda panas m₁ (g)',yl:'Suhu akhir (°C)'},
+ proc:{q:'Untuk mencari kalor jenis sendok misterius, Arif memanaskan sendok sampai 100 °C, lalu membiarkannya di meja 1 menit sebelum dicelupkan ke air. Ia tetap menulis T₁ = 100 °C. Apa akibatnya?',opts:['Tidak berpengaruh, karena sendoknya kecil','Sendok sudah melepas kalor ke udara, sehingga T₁ sebenarnya di bawah 100 °C dan kalor jenis hasil hitungannya menjadi terlalu kecil','Kalor jenis hasil hitungannya menjadi terlalu besar'],ans:1,why:'Asas Black hanya berlaku bila tidak ada kalor yang hilang ke lingkungan. Suhu akhir jadi lebih rendah dari seharusnya, sedangkan ΔT sendok dihitung terlalu besar, sehingga c terhitung terlalu kecil.'},
+ qs:['Bagaimana suhu akhir berubah ketika massa air panas diperbesar? Mengapa suhu akhir tidak pernah melewati T₁ atau T₂?','Tantangan: siapkan 4 L (4.000 g) air mandi bersuhu 37–40 °C dari air termos 95 °C dan air keran 27 °C. Berapa massa masing-masing? Tunjukkan perhitunganmu, lalu uji di simulasi.','Pilih sendok misterius (Logam X). Catat datanya, lalu hitung kalor jenisnya dengan Q lepas = Q terima. Tuliskan langkahmu.'],
+ apply:['Mengapa termos dan kalorimeter dibuat berdinding rangkap? Apa yang terjadi pada hasil percobaanmu jika ember dibiarkan terbuka lama sebelum suhunya diukur?','Saat es batu dimasukkan ke teh panas, teh menjadi dingin. Apakah "dingin" berpindah dari es ke teh? Jelaskan arah perpindahan kalornya.']},
+
+{id:'1-5',no:'1.5',name:'Es sampai mendidih',title:'Dari es batu sampai air mendidih',pages:'hlm. 17–18',timed:80,note:'Wujud berubah, suhu tetap.',
+ phen:{tag:'Fenomena',story:'Es batu dari freezer dimasukkan ke panci lalu dipanaskan di atas kompor. Lama-lama es mencair, air memanas, lalu mendidih dan menguap. Pendaki gunung punya cerita lain: di puncak, air sudah mendidih sebelum 100 °C, dan mi instan jadi lebih lama matang.',q:'Kalor terus diberikan dari kompor. Apakah suhunya selalu naik?'},
+ ask:'Bagaimana suhu berubah ketika es dipanaskan terus-menerus sampai menjadi uap?',
+ predict:{q:'Saat es di panci sedang mencair dan kompor tetap menyala, suhunya…',opts:['terus naik','tetap 0 °C sampai semua es mencair','turun sedikit'],why:'Tetap 0 °C. Kalor yang masuk dipakai untuk mengubah wujud (kalor laten), bukan menaikkan suhu. Itulah bagian mendatar pada grafik.'},
+ vars:[['Waktu pemanasan (kalor yang diberikan)','bebas'],['Suhu zat','terikat'],['Massa es','kontrol'],['Besar api dan lokasi (tekanan udara)','kontrol']],
+ presets:[['Contoh buku: 0,5 kg es',{m:.5,api:'Besar (1.500 W)',loc:'Tepi pantai (didih 100 °C)'}],['Memasak di Dieng',{m:.5,api:'Besar (1.500 W)',loc:'Dieng, ±2.000 m (didih ±93 °C)'}],['Memasak di puncak Semeru',{m:.5,api:'Besar (1.500 W)',loc:'Puncak Semeru, ±3.676 m (didih ±88 °C)'}]],
+ controls:[{k:'m',label:'Massa es batu (dari freezer, −20 °C)',min:.1,max:1,step:.1,unit:'kg',d:1},{k:'api',label:'Besar api kompor',opts:Object.keys(API)},{k:'loc',label:'Lokasi memasak',opts:Object.keys(LOC)}],init:{m:.5,api:'Besar (1.500 W)',loc:'Tepi pantai (didih 100 °C)'},
+ scene:`<svg viewBox="0 0 520 160" role="img" aria-label="Panci berisi es di atas kompor"><rect class="f-mut" x="140" y="128" width="240" height="10" rx="3"/><g id="fl"></g><g id="st">${[215,260,305].map(x=>`<path class="f-steam" d="M${x} 36c-8-8 8-14 0-22s8-12 0-18"/>`).join('')}</g><path class="s-ink" d="M164 46v62a12 12 0 0 0 12 12h168a12 12 0 0 0 12-12V46M356 56h40M124 56h40"/><rect id="wt" style="fill:color-mix(in srgb,var(--cold) 45%,var(--surface))" x="168" y="116" width="184" height="0" rx="6"/><g id="ic">${[0,1,2,3,4].map(i=>`<rect class="f-cold" x="${184+i*32}" y="96" width="22" height="20" rx="4"/>`).join('')}</g><g id="bb">${[190,230,270,300,330].map((x,i)=>`<circle cx="${x}" cy="${104-i%2*12}" r="4" class="f-sur"/>`).join('')}</g><text class="big" id="pT" x="410" y="90">0 °C</text><text class="cap" id="pW" x="410" y="110"></text></svg>
+ <div class="comp" id="cp" role="img" aria-label="Komposisi wujud"><i class="p"></i><i class="c"></i><i class="g"></i></div><div class="legend"><span><i style="background:var(--cold)"></i>padat (es)</span><span><i style="background:color-mix(in srgb,var(--cold) 45%,var(--surface))"></i>cair (air)</span><span><i style="background:var(--steam)"></i>gas (uap)</span></div><svg id="live" role="img" aria-label="Grafik suhu terhadap waktu"></svg><p class="hint">Garis putus-putus adalah percobaan sebelumnya. Ganti lokasi untuk membandingkan.</p>`,
+ P:s=>API[s.api],
+ ph(m,E,bp){const a=m*2100*20,b=m*336000,c=m*4200*bp,d=m*2260000;if(E<a)return{T:-20+E/(m*2100),w:'Es',f:[1,0,0]};E-=a;if(E<b)return{T:0,w:'Es mencair',f:[1-E/b,E/b,0]};E-=b;if(E<c)return{T:E/(m*4200),w:'Air',f:[0,1,0]};E-=c;if(E<d)return{T:bp,w:'Mendidih',f:[0,1-E/d,E/d],boil:1};E-=d;return{T:Math.min(bp+20,bp+E/(m*2010)),w:'Uap',f:[0,0,1]}},
+ tot(s){const bp=LOC[s.loc];return s.m*(42000+336000+4200*bp+2260000+40200)},
+ reset(s){if(s.h&&s.h.length>5)s.ghost=s.h;s.t=0;s.run=false;s.h=[[0,-20]]},
+ step(s,dt){const P=this.P(s);s.t+=dt;const tm=this.tot(s)/P;if(s.t>=tm){s.t=tm;s.run=false}s.h.push([s.t,this.ph(s.m,P*s.t,LOC[s.loc]).T])},
+ update(s){const P=this.P(s),E=P*s.t,p=this.ph(s.m,E,LOC[s.loc]);$$('#cp i').forEach((e,i)=>e.style.width=p.f[i]*100+'%');
+  const wh=p.f[1]*46;$('#wt').setAttribute('y',116-wh);$('#wt').setAttribute('height',wh);$$('#ic rect').forEach((r,i)=>{r.style.display=p.f[0]>i/5?'':'none';r.setAttribute('y',96-wh)});$('#bb').style.display=p.boil?'':'none';$('#st').style.opacity=p.boil?.5:p.f[2]>0?.9:0;
+  $('#fl').innerHTML=s.run?[205,260,315].map(x=>flame(x,APIH[P])).join(''):'';$('#pT').textContent=nf(p.T)+' °C';$('#pW').textContent=p.w.toLowerCase();
+  const xm=Math.max(this.tot(s)/P,s.ghost?s.ghost[s.ghost.length-1][0]:0);
+  chart($('#live'),{xmin:0,xmax:xm,ymin:-30,ymax:130,xl:'Waktu (s)',yl:'Suhu (°C)',series:[...(s.ghost?[{pts:s.ghost,line:1,cls:'ghost'}]:[]),{pts:s.h,line:1}]});s.o=[s.t,E/1000,p.T,p.w];
+  return[['Waktu',nf(s.t,0)+' s'],['Kalor Q = P·t',nf(E/1000)+' kJ'],['Suhu',nf(p.T)+' °C'],['Wujud',p.w]]},
+ cols:['Lokasi','t (s)','Q (kJ)','T (°C)','Wujud'],row:s=>[s.loc.split(',')[0].split(' (')[0],nf(s.o[0],0),nf(s.o[1]),nf(s.o[2]),s.o[3]],
+ proc:{q:'Tono hanya mencatat suhu di awal (−20 °C) dan di akhir (120 °C), lalu menggambar satu garis lurus dan menyimpulkan suhu naik teratur. Apa kelemahan prosedurnya?',opts:['Ia seharusnya memakai es yang lebih banyak','Dua titik data tidak cukup. Suhu perlu dicatat berkala agar bagian mendatar saat mencair dan mendidih terlihat','Ia seharusnya mematikan kompor saat es mencair'],ans:1,why:'Pola baru terlihat bila data diambil cukup rapat. Dengan dua titik saja, dua bagian mendatar pada grafik terlewat.'},
+ qs:['Jeda dan catat data di tiap tahap. Ada berapa bagian mendatar pada grafik, dan apa yang terjadi pada zat di tiap bagian itu?','Bagian mendatar mana yang lebih lama? Hubungkan dengan nilai L_f = 336.000 J/kg dan L_v = 2.260.000 J/kg.','Catat waktu saat es mulai dan selesai mencair. Hitung kalor lebur es dari datamu dengan Q = P·Δt = m·L_f.'],
+ apply:['Mengapa memasak mi instan di puncak gunung butuh waktu lebih lama? Gunakan grafik dari dua lokasi berbeda.','Setelah berolahraga, keringat yang menguap membuat tubuh terasa sejuk. Dari mana kalor untuk menguapkan keringat itu?']},
+
+{id:'1-6',no:'1.6',name:'Gagang panci',title:'Sendok besi dan spatula kayu',pages:'hlm. 19–20',note:'Konduksi = kontak.',
+ phen:{tag:'Fenomena',story:'Sendok besi yang tertinggal di panci sup cepat terasa panas di tangan, sedangkan spatula kayu tetap nyaman dipegang. Pagi hari, pagar besi juga terasa lebih dingin daripada bangku kayu di sebelahnya, padahal keduanya berada di udara yang sama.',q:'Mengapa bahan yang berbeda menghantarkan kalor dengan laju yang berbeda?'},
+ ask:'Bagaimana pengaruh panjang gagang terhadap laju perpindahan kalor secara konduksi?',
+ predict:{q:'Gagang panci dibuat dua kali lebih panjang (bahan, tebal, dan suhu sama). Laju kalor yang sampai ke tanganmu menjadi…',opts:['dua kali','setengah kali','tetap'],why:'Setengah kali. H = k·A·ΔT / L, sehingga laju kalor berbanding terbalik dengan panjang. Grafik H terhadap L melengkung turun, bukan garis lurus.'},
+ vars:[['Panjang gagang L','bebas'],['Laju perpindahan kalor H','terikat'],['Bahan gagang (konduktivitas k)','kontrol'],['Luas penampang A dan beda suhu ΔT','kontrol']],
+ presets:[['Sendok besi di sup',{b:'Besi (sendok, pagar)',L:.2,A:1,Th:90,Tc:34}],['Spatula kayu',{b:'Kayu (spatula)',L:.2,A:1,Th:90,Tc:34}],['Contoh buku: tembaga 0,5 m',{b:'Tembaga (panci tembaga)',L:.5,A:4,Th:100,Tc:0}]],
+ controls:[{k:'b',label:'Bahan gagang',opts:Object.keys(KOND)},{k:'L',label:'Panjang gagang L',min:.1,max:1,step:.05,unit:'m',d:2},{k:'A',label:'Luas penampang A',min:1,max:10,step:1,unit:'cm²'},{k:'Th',label:'Suhu sup di panci',min:50,max:200,step:5,unit:'°C'},{k:'Tc',label:'Suhu tangan di ujung gagang',min:0,max:40,step:1,unit:'°C'}],init:{b:'Besi (sendok, pagar)',L:.2,A:1,Th:90,Tc:34},
+ scene:`<svg viewBox="0 0 520 160" role="img" aria-label="Panci sup dengan gagang dan tangan"><defs><linearGradient id="gr"><stop offset="0" style="stop-color:var(--hot)"/><stop offset="1" id="gr2" style="stop-color:var(--metal)"/></linearGradient></defs>${[30,55,80].map(x=>`<path class="f-steam" d="M${x} 32c-6-6 6-10 0-16s6-9 0-14"/>`).join('')}<path class="s-ink" d="M14 40v76a10 10 0 0 0 10 10h72a10 10 0 0 0 10-10V40"/><rect class="f-hot" x="18" y="56" width="84" height="66" rx="6" opacity=".8"/><rect id="cb" x="106" y="66" width="300" height="14" fill="url(#gr)"/><g id="cd">${'<circle class="f-gold" r="3.5" cy="73"/>'.repeat(7)}</g><g id="hd"><rect class="f-skin" x="0" y="50" width="62" height="46" rx="20"/><text class="lbl" x="31" y="78" text-anchor="middle">tangan</text></g><text class="cap" x="60" y="146" text-anchor="middle" id="ch">sup 90 °C</text><text class="cap" id="cc" x="400" y="146" text-anchor="middle">34 °C</text><text class="cap" x="160" y="20">Titik emas = aliran energi. Makin besar H, makin cepat.</text></svg>`,
+ update(s){const dT=s.Th-s.Tc,H=KOND[s.b]*s.A*1e-4*dT/s.L,len=70+(s.L-.1)/.9*260,th=6+s.A*2.4;$('#cb').setAttribute('width',len);$('#cb').setAttribute('height',th);$('#cb').setAttribute('y',73-th/2);$('#hd').setAttribute('transform',`translate(${100+len})`);$('#cc').setAttribute('x',131+len);$('#ch').textContent='sup '+s.Th+' °C';$('#cc').textContent='tangan '+s.Tc+' °C';
+  const k=KOND[s.b];$('#gr2').style.stopColor=k<1?'var(--sand)':'var(--metal)';s.len=len;s.H=H;s.o=[dT,H];this.tick(s,0);
+  return[['ΔT',dT+' °C'],['k '+short(s.b).toLowerCase(),sig(k)+' W/m°C'],['Laju kalor H',sig(H)+' W'],['Kalor ke tangan tiap menit',sig(H*60)+' J']]},
+ tick(s,dt){s.ph=((s.ph||0)+(still?0:dt*Math.min(1.2,.05+Math.log10(1+s.H)*.3)))%1;$$('#cd circle').forEach((c,i)=>c.setAttribute('cx',110+((s.ph+i/7)%1)*(s.len-8)))},
+ cols:['Bahan','L (m)','A (cm²)','ΔT (°C)','H (W)'],row:s=>[short(s.b),nf(s.L,2),s.A,s.o[0],sig(s.o[1])],num:s=>[0,s.L,s.A,s.o[0],s.o[1]],plot:{x:1,y:4,xl:'Panjang gagang L (m)',yl:'Laju kalor H (W)'},
+ proc:{q:'Lia memegang pagar besi dan bangku kayu di halaman sekolah pada pagi hari. Besi terasa lebih dingin, jadi ia mencatat "suhu pagar lebih rendah". Apa yang keliru?',opts:['Tidak ada yang keliru, tangan cukup peka untuk mengukur suhu','Sensasi dingin bukan ukuran suhu. Suhu harus diukur dengan termometer; besi terasa dingin karena konduktivitasnya besar sehingga kalor dari tangan cepat berpindah','Bangku kayu seharusnya dipegang lebih lama'],ans:1,why:'Kedua benda bersuhu sama dengan udara sekitar. Yang berbeda adalah laju kalor yang keluar dari tangan, dan itu bisa kamu buktikan dengan membandingkan H besi dan kayu di percobaan ini.'},
+ qs:['Bagaimana bentuk grafik H terhadap L dari datamu? Apa arti bentuk itu?','Dengan L, A, dan ΔT yang sama, bandingkan H besi dan kayu. Berapa kali lipat bedanya?','Ulangi contoh buku saku: tembaga 0,5 m, A = 4 cm², ujung 100 °C dan 0 °C. Apakah hasilnya 32 W?'],
+ apply:['Mengapa gagang panci dan wajan biasanya dibuat dari plastik atau kayu, dan sering dibuat cukup panjang?','Termos dapat menjaga minuman tetap panas berjam-jam. Bagian termos mana yang mengurangi konduksi, konveksi, dan radiasi?']}
+];
+
+/* ---------- mesin laman ---------- */
+let cur=null;
+const ROLE=['bebas','terikat','kontrol'];
+LABS.forEach(L=>{L.s={...L.init};L.rows=store.get('rows'+L.id,[]);L.pts=store.get('pts'+L.id,[]);if(L.reset)L.reset(L.s)});
+const who={get value(){return (window.BK&&BK.kode())||''}};
+const qa=(id,label)=>`<div class="q"><label for="${id}">${label}</label><textarea id="${id}"></textarea></div>`;
+
+function show(id,setHash){
+  const L=LABS.find(l=>l.id==id)||LABS[0];cur=L;const s=L.s;
+  $$('#tabs button').forEach(b=>b.setAttribute('aria-selected',b.dataset.id==L.id));
+  if(setHash)try{history.replaceState(null,'','#lab-'+L.id)}catch(e){}
+  $('#rep').hidden=true;
+  $('#panel').innerHTML=`
+  <div class="head"><div><div class="no">Percobaan ${L.no} · Buku saku ${L.pages}</div><h2>${L.title}</h2></div><div class="note">${L.note}</div></div>
+  <section class="step"><div class="n">1</div><h3>Amati fenomena</h3><div class="body"><div class="phen"><span class="tag">${L.phen.tag}</span><p>${L.phen.story}</p><p class="pem">${L.phen.q}</p></div>${L.phen.demo||''}${qa('p0','<b>Dugaan awalku.</b> Tulis jawaban sementaramu untuk pertanyaan di atas. Nanti kamu bandingkan setelah percobaan.')}</div></section>
+  <section class="step"><div class="n">2</div><h3>Rumuskan dan prediksi</h3><div class="body"><p><b>Pertanyaan penyelidikan.</b> ${L.ask}</p><p>${L.predict.q}</p><div class="opts" id="pred">${L.predict.opts.map((o,i)=>`<label><input type="radio" name="pred" value="${i}"><span>${o}</span></label>`).join('')}</div><p class="hint">Pilih tebakanmu dulu. Jawabannya kamu buktikan sendiri lewat data.</p></div></section>
+  <section class="step"><div class="n">3</div><h3>Tentukan variabel</h3><div class="body"><p>Untuk menjawab pertanyaan penyelidikan, tentukan peran tiap besaran.</p><div class="vars" id="vars">${L.vars.map((v,i)=>`<label for="v${i}">${v[0]}</label><select id="v${i}"><option value="">pilih…</option>${ROLE.map(r=>`<option>${r}</option>`).join('')}</select><span class="m" id="vm${i}"></span>`).join('')}</div><div class="row"><button class="btn alt" id="vck">Periksa</button><span id="vfb" class="hint">Bebas = yang sengaja kamu ubah. Terikat = yang kamu amati. Kontrol = yang dijaga tetap.</span></div></div></section>
+  <section class="step"><div class="n">4</div><h3>Lakukan percobaan</h3><div class="body">
+    <div class="row chips">Coba situasi: ${L.presets.map((p,i)=>`<button data-p="${i}">${p[0]}</button>`).join('')}</div>
+    <div class="bench"><div class="ctls">${L.controls.map(c=>c.opts?`<div class="ctl"><label for="c_${c.k}">${c.label}</label><select id="c_${c.k}">${c.opts.map(o=>`<option>${o}</option>`).join('')}</select></div>`:`<div class="ctl"><label for="c_${c.k}">${c.label}<output id="o_${c.k}"></output></label><input type="range" id="c_${c.k}" min="${c.min}" max="${c.max}" step="${c.step}"></div>`).join('')}
+    ${L.timed?`<div class="row"><button class="btn" id="go">Nyalakan kompor</button><button class="btn alt" id="rs">Ulang</button></div><p class="hint">Waktu dipercepat ${L.timed}×. Jeda kapan saja untuk mencatat.</p>`:''}
+    <div class="row"><button class="btn" id="rec">Catat data</button><span class="hint" id="recmsg"></span></div></div>
+    <div class="stage">${L.scene}<div class="reads" id="reads"></div></div></div></div></section>
+  <section class="step"><div class="n">5</div><h3>Data pengamatan</h3><div class="body"><div class="${L.plot?'split':''}"><div><div class="tw" id="tw"></div></div>${L.plot?`<div class="plot"><svg id="plot" role="img" aria-label="Grafik data"></svg></div>`:''}</div><div class="row"><button class="btn alt" id="clr">Hapus semua data</button><span class="hint">Catat minimal lima data dengan hanya mengubah variabel bebas.</span></div></div></section>
+  <section class="step"><div class="n">6</div><h3>Analisis dan kesimpulan</h3><div class="body">
+    <div class="row"><button class="btn alt" id="pck">Bandingkan dengan prediksiku</button><span class="hint" id="pmsg"></span></div><div id="pfb"></div>
+    ${L.qs.map((q,i)=>qa('a'+i,`<b>${i+1}.</b> ${q}`)).join('')}
+    ${qa('a9','<b>Kesimpulan.</b> Jawab pertanyaan penyelidikan dengan kalimatmu sendiri, berdasarkan data. Bandingkan dengan dugaan awalmu di langkah 1.')}
+    <p><b>Evaluasi prosedur.</b> ${L.proc.q}</p><div class="opts" id="proc">${L.proc.opts.map((o,i)=>`<label><input type="radio" name="proc" value="${i}"><span>${o}</span></label>`).join('')}</div><div id="prfb"></div>
+  </div></section>
+  <section class="step"><div class="n">7</div><h3>Kembali ke kehidupan sehari-hari</h3><div class="body"><p>Sekarang jawab lagi pertanyaan fenomena di langkah 1, lalu terapkan pada kejadian lain di sekitarmu.</p>${L.apply.map((q,i)=>qa('b'+i,`<b>${i+1}.</b> ${q}`)).join('')}</div></section>`;
+
+  const syncCtl=()=>L.controls.forEach(c=>{$('#c_'+c.k).value=s[c.k]});
+  L.controls.forEach(c=>{const el=$('#c_'+c.k);el.oninput=()=>{s[c.k]=c.opts?el.value:+el.value;if(L.reset)L.reset(s);refresh()}});syncCtl();
+  $('.chips').onclick=e=>{const b=e.target.closest('button');if(!b)return;Object.assign(s,L.presets[+b.dataset.p][1]);if(L.reset)L.reset(s);syncCtl();refresh()};
+  if(L.phen.init)L.phen.init();
+  const pv=store.get('pred'+L.id,null);if(pv!=null){const r=$(`#pred input[value="${pv}"]`);if(r)r.checked=true}
+  $('#pred').onchange=e=>store.set('pred'+L.id,e.target.value);
+  $('#vck').onclick=()=>{let n=0;L.vars.forEach((v,i)=>{const ok=$('#v'+i).value==v[1];n+=ok;const m=$('#vm'+i);m.textContent=ok?'✓':'✗';m.className='m '+(ok?'ok':'bad')});$('#vfb').textContent=n==L.vars.length?'Tepat. Sekarang ubah hanya variabel bebasnya.':`${n} dari ${L.vars.length} benar. Perhatikan lagi pertanyaan penyelidikannya.`};
+  if(L.timed){$('#go').onclick=()=>{s.run=!s.run;refresh()};$('#rs').onclick=()=>{L.reset(s);refresh()}}
+  if(L.id=='1-4'){$('#mix').onclick=()=>{s.p=0;s.mixing=true;refresh()};$('#xck').onclick=()=>{const v=+$('#xc').value,ok=v>0&&Math.abs(v-X_C)/X_C<=.05;$('#xfb').textContent=ok?'✓ Tepat, dalam batas 5%.':'✗ Belum tepat. Periksa satuan massa (kg) dan ΔT sendok.';$('#xfb').className='m '+(ok?'ok':'bad')}}
+  $('#rec').onclick=()=>{if(L.canRec&&!L.canRec(s)){$('#recmsg').textContent=L.recMsg;return}L.rows.push(L.row(s).map(String));L.pts.push(L.num?L.num(s):[]);save();table();$('#recmsg').textContent='Data ke-'+L.rows.length+' tercatat.'};
+  $('#clr').onclick=()=>{L.rows=[];L.pts=[];save();table()};
+  $('#tw').onclick=e=>{const b=e.target.closest('button');if(b){L.rows.splice(+b.dataset.i,1);L.pts.splice(+b.dataset.i,1);save();table()}};
+  $('#pck').onclick=()=>{if(L.rows.length<3){$('#pmsg').textContent='Catat minimal tiga data dulu.';return}const p=store.get('pred'+L.id,null);$('#pmsg').textContent='';$('#pfb').innerHTML=`<div class="fb">${p==null?'Kamu belum memilih prediksi. ':'Prediksimu: <b>'+L.predict.opts[p]+'</b>. '}${L.predict.why}</div>`};
+  $('#proc').onchange=e=>{const ok=+e.target.value==L.proc.ans;$('#prfb').innerHTML=`<div class="fb ${ok?'ok':'bad'}"><b>${ok?'Tepat.':'Belum tepat.'}</b> ${ok?L.proc.why:'Pikirkan lagi: variabel apa yang seharusnya dijaga, dan apa yang benar-benar diukur?'}</div>`};
+  $$('#panel textarea').forEach(t=>{t.value=store.get('ans'+L.id+t.id,'');t.oninput=()=>store.set('ans'+L.id+t.id,t.value)});
+  refresh();table();
+}
+function save(){store.set('rows'+cur.id,cur.rows);store.set('pts'+cur.id,cur.pts)}
+function refresh(){
+  const L=cur,s=L.s;
+  L.controls.forEach(c=>{const o=$('#o_'+c.k);if(o)o.textContent=nf(s[c.k],c.d||0)+' '+c.unit});
+  $('#reads').innerHTML=L.update(s).map(r=>`<div class="${r[2]||''}"><span>${r[0]}</span><b>${r[1]}</b></div>`).join('');
+  if(L.timed)$('#go').textContent=s.run?'Jeda':s.t>0?'Lanjutkan':'Nyalakan kompor';
+}
+function table(){
+  const L=cur;
+  $('#tw').innerHTML=L.rows.length?`<table><thead><tr><th>No</th>${L.cols.map(c=>`<th>${c}</th>`).join('')}<th></th></tr></thead><tbody>${L.rows.map((r,i)=>`<tr><td>${i+1}</td>${r.map(c=>`<td>${c}</td>`).join('')}<td><button data-i="${i}" aria-label="Hapus baris ${i+1}">×</button></td></tr>`).join('')}</tbody></table>`:`<div class="empty">Belum ada data. Atur percobaan, lalu tekan "Catat data".</div>`;
+  if(L.plot){const pts=L.pts.filter(p=>p.length).map(p=>[p[L.plot.x],p[L.plot.y]]);const [x0,x1]=span(pts.map(p=>p[0]),1.15),[y0,y1]=span(pts.map(p=>p[1]),1.15);chart($('#plot'),{xmin:x0,xmax:x1,ymin:y0,ymax:y1,xl:L.plot.xl,yl:L.plot.yl,series:[{pts,dots:1}]})}
+}
+let last=performance.now();
+function loop(now){const dt=Math.min(.05,(now-last)/1000);last=now;const L=cur;
+  if(L){if(L.timed&&L.s.run){L.step(L.s,dt*L.timed);refresh()}else if(L.tick)L.tick(L.s,dt)}
+  requestAnimationFrame(loop)}
+
+$('#copy').onclick=()=>{
+  const L=cur,p=store.get('pred'+L.id,null),v=id=>($('#'+id)||{}).value||'-';
+  const txt=[`LAPORAN LAB VIRTUAL KALOR — Percobaan ${L.no}: ${L.title}`,`Nama/kelas: ${who.value||'-'}`,``,`FENOMENA: ${L.phen.q}`,`Dugaan awal: ${v('p0')}`,``,`Pertanyaan penyelidikan: ${L.ask}`,`Prediksi: ${p==null?'-':L.predict.opts[p]}`,``,`DATA`,['No',...L.cols].join('\t'),...L.rows.map((r,i)=>[i+1,...r].join('\t')),``,`ANALISIS`,...L.qs.map((q,i)=>`${i+1}. ${q}\n   Jawab: ${v('a'+i)}`),`Kesimpulan: ${v('a9')}`,``,`PENERAPAN SEHARI-HARI`,...L.apply.map((q,i)=>`${i+1}. ${q}\n   Jawab: ${v('b'+i)}`)].join('\n');
+  const fb=()=>{const r=$('#rep');r.hidden=false;r.value=txt;r.focus();r.select();$('#copymsg').textContent='Salin teks di bawah ini secara manual.'};
+  try{navigator.clipboard.writeText(txt).then(()=>{$('#copymsg').textContent='Laporan tersalin. Tempel ke tugasmu.'},fb)}catch(e){fb()}
+};
+$('#kirimlab').onclick=()=>{const L=cur,p=store.get('pred'+L.id,null),v=id=>($('#'+id)||{}).value||'-';const txt=[`LAPORAN LAB VIRTUAL KALOR — Percobaan ${L.no}: ${L.title}`,`Nama/kelas: ${who.value||'-'}`,``,`FENOMENA: ${L.phen.q}`,`Dugaan awal: ${v('p0')}`,``,`Pertanyaan penyelidikan: ${L.ask}`,`Prediksi: ${p==null?'-':L.predict.opts[p]}`,``,`DATA`,['No',...L.cols].join('\t'),...L.rows.map((r,i)=>[i+1,...r].join('\t')),``,`ANALISIS`,...L.qs.map((q,i)=>`${i+1}. ${q}\n   Jawab: ${v('a'+i)}`),`Kesimpulan: ${v('a9')}`,``,`PENERAPAN SEHARI-HARI`,...L.apply.map((q,i)=>`${i+1}. ${q}\n   Jawab: ${v('b'+i)}`)].join('\n');if(L.rows.length<3){$('#copymsg').textContent='Catat minimal tiga data di langkah 4 sebelum mengirim.';return}BK.send('lab','percobaan_'+L.no,{laporan:txt});$('#copymsg').textContent='Laporan terkirim ke guru. Kamu masih bisa memperbaiki dan mengirim ulang.'};
+show(LABID);requestAnimationFrame(loop);BK.labTiles();
+})();
+</script>
+</body></html>
